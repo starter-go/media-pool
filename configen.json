@@ -1,0 +1,57 @@
+{
+    "configen": {
+        "version": "4",
+        "sources": [
+            {
+                "id": "common",
+                "path": "common",
+                "r": true
+            },
+            {
+                "id": "client",
+                "path": "client",
+                "r": true
+            },
+            {
+                "id": "server",
+                "path": "server",
+                "r": true
+            },
+            {
+                "id": "test",
+                "path": "src/test/golang",
+                "r": true
+            }
+        ],
+        "destinations": [
+            {
+                "id": "common",
+                "path": "gen/common4mediapool",
+                "sources": [
+                    "common"
+                ]
+            },
+            {
+                "id": "client",
+                "path": "gen/client4mediapool",
+                "sources": [
+                    "client"
+                ]
+            },
+            {
+                "id": "server",
+                "path": "gen/server4mediapool",
+                "sources": [
+                    "server"
+                ]
+            },
+            {
+                "id": "test",
+                "path": "gen/test4mediapool",
+                "sources": [
+                    "test"
+                ]
+            }
+        ]
+    }
+}
