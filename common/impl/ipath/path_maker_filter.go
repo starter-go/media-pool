@@ -16,26 +16,29 @@ type PathMakerFilterLayer struct {
 }
 
 // Put implements objects.UploadFilter.
-func (inst *PathMakerFilterLayer) Put(o *objects.Object, next objects.UploadFilterChain) error {
+func (inst *PathMakerFilterLayer) Put(c *objects.IOContext, next objects.UploadFilterChain) error {
 
 	// make (id & path)
 
-	id := inst.innerMakeID(o)
-	o.ID = id
+	want := c.Want
 
-	path := inst.innerMakePath(o)
-	o.Path = path
+	id := inst.innerMakeID(want)
+	want.ID = id
 
-	return next.Put(o)
+	path := inst.innerMakePath(want)
+	want.Path = path
+
+	return next.Put(c)
 }
 
 // Fetch implements objects.DownloadFilter.
-func (inst *PathMakerFilterLayer) Fetch(o *objects.Object, next objects.DownloadFilterChain) error {
+func (inst *PathMakerFilterLayer) Fetch(o *objects.IOContext, next objects.DownloadFilterChain) error {
 
 	// make (path)
 
-	path := inst.innerMakePath(o)
-	o.Path = path
+	want := o.Want
+	path := inst.innerMakePath(want)
+	want.Path = path
 
 	return next.Fetch(o)
 }

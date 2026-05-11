@@ -4,6 +4,7 @@ import (
 	"embed"
 
 	"github.com/starter-go/application"
+	"github.com/starter-go/bucket-drivers/aliyun"
 	"github.com/starter-go/buckets/modules/buckets"
 	"github.com/starter-go/libgin/modules/libgin"
 
@@ -25,8 +26,10 @@ const (
 ////////////////////////////////////////////////////////////////////////////////
 
 const (
-	theMainModuleResPath = "src/main/resources"
-	theTestModuleResPath = "src/test/resources"
+	theMainModuleResPath   = "src/main/resources"
+	theTestModuleResPath   = "src/test/resources"
+	theClientModuleResPath = "src/client/resources"
+	theServerModuleResPath = "src/server/resources"
 )
 
 //go:embed "src/main/resources"
@@ -34,6 +37,12 @@ var theMainModuleResFS embed.FS
 
 //go:embed "src/test/resources"
 var theTestModuleResFS embed.FS
+
+//go:embed "src/client/resources"
+var theClientModuleResFS embed.FS
+
+//go:embed "src/server/resources"
+var theServerModuleResFS embed.FS
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -60,7 +69,7 @@ func ModuleForClient() application.Module {
 	mb.Version(theModuleVersion)
 	mb.Revision(theModuleRevision)
 
-	mb.EmbedResources(theMainModuleResFS, theMainModuleResPath)
+	mb.EmbedResources(theClientModuleResFS, theClientModuleResPath)
 
 	mb.Components(client4mediapool.ExportComponents)
 
@@ -76,13 +85,15 @@ func ModuleForServer() application.Module {
 	mb.Version(theModuleVersion)
 	mb.Revision(theModuleRevision)
 
-	mb.EmbedResources(theMainModuleResFS, theMainModuleResPath)
+	mb.EmbedResources(theServerModuleResFS, theServerModuleResPath)
 
 	mb.Components(server4mediapool.ExportComponents)
 
 	mb.Depend(ModuleForCommon())
 	mb.Depend(libgin.Module())
 	mb.Depend(buckets.ModuleLib())
+
+	mb.Depend(aliyun.Module())
 
 	return mb.Create()
 }

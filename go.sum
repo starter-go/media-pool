@@ -1,3 +1,5 @@
+github.com/aliyun/alibabacloud-oss-go-sdk-v2 v1.4.0 h1:gfxyMc5g9TJ4TO/PQ8PvkGfYpDUHZnVGP0/7iTgI0Ks=
+github.com/aliyun/alibabacloud-oss-go-sdk-v2 v1.4.0/go.mod h1:FTzydeQVmR24FI0D6XWUOMKckjXehM/jgMn1xC+DA9M=
 github.com/bytedance/sonic v1.5.0/go.mod h1:ED5hyg4y6t3/9Ku1R6dU/4KyJ48DZ4jPhfY1O2AihPM=
 github.com/bytedance/sonic v1.9.1 h1:6iJ6NqdoxCDr6mbY8h18oSO+cShGSMRGCEo7F2h0x8s=
 github.com/bytedance/sonic v1.9.1/go.mod h1:i736AoUSYt75HyZLoJW9ERYxcy6eaN6h4BZXU064P/U=
@@ -46,6 +48,8 @@ github.com/starter-go/application v0.9.27 h1:JXr3R9VkA2Z6ZU0wEdNGGdMkSLqzWt+jQoF
 github.com/starter-go/application v0.9.27/go.mod h1:4wPAbJiqxHCEK7haXG6k923BLmopQoCDsH7vxlKrR1M=
 github.com/starter-go/base v0.9.11 h1:QG5kcShJSV9cs2KEeqZ8UN9icM/0uPZwPFrh0XUOf+Q=
 github.com/starter-go/base v0.9.11/go.mod h1:MMqPMFzwPHjKyfX0cMmkpAAbeJ0tJupFbI8D+x27fJM=
+github.com/starter-go/bucket-drivers/aliyun v0.0.1 h1:ghUKqnMaXQtGKOPyW0uA9qD2DnRumTF7R/+M8yvkIsE=
+github.com/starter-go/bucket-drivers/aliyun v0.0.1/go.mod h1:MLrEL2KQ6CqvNcK+NGhRs1/mQDXkF1y2obW4Q6KF/Cs=
 github.com/starter-go/buckets v0.0.4 h1:z+Fj9FHN6mJb9jfnXE9oMcqNxZp8iIZDm8zF+kp94Tw=
 github.com/starter-go/buckets v0.0.4/go.mod h1:wV9FxLY5yhLIf020PqgZMguVwpt6YYBjX3n5Jarnrjg=
 github.com/starter-go/configen v0.0.0-20240808074138-30de1adf37ed h1:M2a7T859WdgePU0bZsTkXwH1kWWO+PG96MxBcboWrOU=
@@ -105,6 +109,8 @@ golang.org/x/sys v0.22.0 h1:RI27ohtqKCnwULzJLqkv897zojh5/DwS/ENaMzUOaWI=
 golang.org/x/sys v0.22.0/go.mod h1:/VUhepiaJMQUp4+oa/7Zr1D23ma6VTLIYjOOTFZPUcA=
 golang.org/x/text v0.9.0 h1:2sjJmO8cDvYveuX97RDLsxlyUxLl+GHoLxBiRdHllBE=
 golang.org/x/text v0.9.0/go.mod h1:e1OnstbJyHTd6l/uOt8jFFHp6TRDWZR/bV3emEE/zU8=
+golang.org/x/time v0.4.0 h1:Z81tqI5ddIoXDPvVQ7/7CC9TnLM7ubaFG2qXYd5BbYY=
+golang.org/x/time v0.4.0/go.mod h1:3BpzKBy/shNhVucY/MWOyx10tF3SFh9QdLuxbVysPQM=
 golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
 google.golang.org/protobuf v1.26.0-rc.1/go.mod h1:jlhhOSvTdKEhbULTjvd4ARK9grFBp09yW+WbY/TyQbw=
 google.golang.org/protobuf v1.30.0 h1:kPPoIgf3TsEvrm0PFe15JQ+570QVxYzEvvHqChK+cng=

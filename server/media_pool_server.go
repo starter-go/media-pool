@@ -19,13 +19,13 @@ type MPServer struct {
 }
 
 // Fetch implements objects.Client.
-func (inst *MPServer) Fetch(o *objects.Object) error {
+func (inst *MPServer) Fetch(o *objects.IOContext) error {
 
 	return inst.chainDown.Fetch(o)
 }
 
 // Put implements objects.Client.
-func (inst *MPServer) Put(o *objects.Object) error {
+func (inst *MPServer) Put(o *objects.IOContext) error {
 
 	return inst.chainUp.Put(o)
 }

@@ -10,12 +10,12 @@ type ObjectServiceImpl struct {
 }
 
 // Fetch implements objects.Service.
-func (inst *ObjectServiceImpl) Fetch(o *objects.Info) error {
+func (inst *ObjectServiceImpl) Fetch(o *objects.IOContext) error {
 	panic("unimplemented")
 }
 
 // Put implements objects.Service.
-func (inst *ObjectServiceImpl) Put(o *objects.Info) error {
+func (inst *ObjectServiceImpl) Put(o *objects.IOContext) error {
 	panic("unimplemented")
 }
 

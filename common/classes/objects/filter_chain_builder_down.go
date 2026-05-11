@@ -105,7 +105,7 @@ type innerDownloadFilterChainNode struct {
 }
 
 // Put implements DownloadFilterChain.
-func (i *innerDownloadFilterChainNode) Fetch(o *Object) error {
+func (i *innerDownloadFilterChainNode) Fetch(o *IOContext) error {
 	f := i.f
 	n := i.next
 	return f.Fetch(o, n)
@@ -118,7 +118,7 @@ type innerDownloadFilterChainEnding struct {
 }
 
 // Put implements DownloadFilterChain.
-func (i *innerDownloadFilterChainEnding) Fetch(o *Object) error {
+func (i *innerDownloadFilterChainEnding) Fetch(o *IOContext) error {
 	// NOP
 	return nil
 }

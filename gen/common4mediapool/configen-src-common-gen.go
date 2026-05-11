@@ -49,7 +49,7 @@ func (inst* p78c4450e8d_icache_ObjectCacheFilterLayer) inject(injext application
 
 
 func (inst*p78c4450e8d_icache_ObjectCacheFilterLayer) getMPCacheDir(ie application.InjectionExt)string{
-    return ie.GetString("${media-pool.cache.dir}")
+    return ie.GetString("${mediapool.cache.dir}")
 }
 
 
@@ -125,6 +125,44 @@ func (inst* p33805c9ff5_imonitor_MonitorFilterLayer) new() any {
 func (inst* p33805c9ff5_imonitor_MonitorFilterLayer) inject(injext application.InjectionExt, instance any) error {
 	ie := injext
 	com := instance.(*p33805c9ff.MonitorFilterLayer)
+	nop(ie, com)
+
+	
+
+
+    return nil
+}
+
+
+
+// type p33805c9ff.ParamsCheckerFilter in package:github.com/starter-go/media-pool/common/impl/imonitor
+//
+// id:com-33805c9ff5ec1ca4-imonitor-ParamsCheckerFilter
+// class:class-46220f67d06e6dbd28c3603d4b14f6ae-FilterRegistry
+// alias:
+// scope:singleton
+//
+type p33805c9ff5_imonitor_ParamsCheckerFilter struct {
+}
+
+func (inst* p33805c9ff5_imonitor_ParamsCheckerFilter) register(cr application.ComponentRegistry) error {
+	r := cr.NewRegistration()
+	r.ID = "com-33805c9ff5ec1ca4-imonitor-ParamsCheckerFilter"
+	r.Classes = "class-46220f67d06e6dbd28c3603d4b14f6ae-FilterRegistry"
+	r.Aliases = ""
+	r.Scope = "singleton"
+	r.NewFunc = inst.new
+	r.InjectFunc = inst.inject
+	return r.Commit()
+}
+
+func (inst* p33805c9ff5_imonitor_ParamsCheckerFilter) new() any {
+    return &p33805c9ff.ParamsCheckerFilter{}
+}
+
+func (inst* p33805c9ff5_imonitor_ParamsCheckerFilter) inject(injext application.InjectionExt, instance any) error {
+	ie := injext
+	com := instance.(*p33805c9ff.ParamsCheckerFilter)
 	nop(ie, com)
 
 	

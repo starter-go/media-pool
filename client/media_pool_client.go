@@ -19,15 +19,15 @@ type MPClient struct {
 }
 
 // Fetch implements objects.Client.
-func (inst *MPClient) Fetch(o *objects.Object) error {
+func (inst *MPClient) Fetch(c *objects.IOContext) error {
 
-	return inst.chainDown.Fetch(o)
+	return inst.chainDown.Fetch(c)
 }
 
 // Put implements objects.Client.
-func (inst *MPClient) Put(o *objects.Object) error {
+func (inst *MPClient) Put(c *objects.IOContext) error {
 
-	return inst.chainUp.Put(o)
+	return inst.chainUp.Put(c)
 }
 
 func (inst *MPClient) Life() *application.Life {

@@ -31,13 +31,14 @@ func (inst*autoRegistrar) addAll() error {
 
     
     inst.register(&p474aadc6be_controllers_ExampleController{})
-    inst.register(&p474aadc6be_controllers_MediaController{})
+    inst.register(&p474aadc6be_controllers_ObjectDownloadController{})
+    inst.register(&p474aadc6be_controllers_ObjectUploadController{})
     inst.register(&p8d6dba9bfd_iobjects_LocalObjectCache{})
     inst.register(&p8d6dba9bfd_iobjects_ObjectServiceImpl{})
     inst.register(&pdfc4d7922e_server_MPServer{})
-    inst.register(&pe2332cb1bd_ipools_DefaultBucketHolder{})
-    inst.register(&pe2332cb1bd_ipools_DefaultBucketLoader{})
-    inst.register(&pe2332cb1bd_ipools_DefaultPoolService{})
+    inst.register(&pfc90c21d18_istorage_DefaultBucketHolder{})
+    inst.register(&pfc90c21d18_istorage_DefaultBucketLoader{})
+    inst.register(&pfc90c21d18_istorage_ObjectStoragePoolFilter{})
 
 
     return nil

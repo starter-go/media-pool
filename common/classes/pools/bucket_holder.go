@@ -9,7 +9,3 @@ import (
 type BucketHolder interface {
 	GetBucket(c context.Context) (buckets.Bucket, error)
 }
-
-type BucketLoader interface {
-	LoadBucket(c context.Context) (buckets.Bucket, error)
-}

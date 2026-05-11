@@ -14,13 +14,13 @@ type TempFileFilterLayer struct {
 }
 
 // Put implements objects.UploadFilter.
-func (inst *TempFileFilterLayer) Put(o *objects.Object, next objects.UploadFilterChain) error {
+func (inst *TempFileFilterLayer) Put(o *objects.IOContext, next objects.UploadFilterChain) error {
 
 	return next.Put(o)
 }
 
 // Fetch implements objects.DownloadFilter.
-func (inst *TempFileFilterLayer) Fetch(o *objects.Object, next objects.DownloadFilterChain) error {
+func (inst *TempFileFilterLayer) Fetch(o *objects.IOContext, next objects.DownloadFilterChain) error {
 
 	return next.Fetch(o)
 }

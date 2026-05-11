@@ -20,7 +20,7 @@ export default defineConfig({
     port: 7308,
 
     proxy: {
-      "/files": {
+      "/objects": {
         target: "http://localhost:7309/"
       }
     }

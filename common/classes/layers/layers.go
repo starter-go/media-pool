@@ -3,7 +3,7 @@ package layers
 const (
 	PriorityMin = iota
 
-	PriorityPool
+	PriorityStorage
 	PriorityCache
 	PriorityMonitor
 
@@ -12,6 +12,7 @@ const (
 	PriorityBuffer
 	PriorityTemp
 	PriorityDebug
+	PriorityParamsChecker
 
 	PriorityOther
 	PriorityMax

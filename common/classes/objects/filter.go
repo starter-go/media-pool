@@ -3,21 +3,21 @@ package objects
 ////////////////////////////////////////////////////////////////////////////////
 
 type UploadFilter interface {
-	Put(o *Object, next UploadFilterChain) error
+	Put(o *IOContext, next UploadFilterChain) error
 }
 
 type UploadFilterChain interface {
-	Put(o *Object) error
+	Put(o *IOContext) error
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 type DownloadFilter interface {
-	Fetch(o *Object, next DownloadFilterChain) error
+	Fetch(o *IOContext, next DownloadFilterChain) error
 }
 
 type DownloadFilterChain interface {
-	Fetch(o *Object) error
+	Fetch(o *IOContext) error
 }
 
 ////////////////////////////////////////////////////////////////////////////////

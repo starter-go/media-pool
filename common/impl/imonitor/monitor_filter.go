@@ -15,22 +15,23 @@ type MonitorFilterLayer struct {
 }
 
 // Put implements objects.UploadFilter.
-func (inst *MonitorFilterLayer) Put(o *objects.Object, next objects.UploadFilterChain) error {
+func (inst *MonitorFilterLayer) Put(o *objects.IOContext, next objects.UploadFilterChain) error {
 
 	err := next.Put(o)
 	if err == nil {
-		inst.log(o, "put:")
+		inst.log(o.Want, "put:")
 	}
 	return err
 }
 
 // Fetch implements objects.DownloadFilter.
-func (inst *MonitorFilterLayer) Fetch(o *objects.Object, next objects.DownloadFilterChain) error {
+func (inst *MonitorFilterLayer) Fetch(o *objects.IOContext, next objects.DownloadFilterChain) error {
 
-	err := next.Fetch(o)
-	if err == nil {
-		inst.log(o, "fetch:")
-	}
+	// err := next.Fetch(o)
+	// if err == nil {
+	// 	inst.log(o, "fetch:")
+	// }
+
 	return next.Fetch(o)
 }
 

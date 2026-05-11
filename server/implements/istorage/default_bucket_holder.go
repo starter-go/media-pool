@@ -1,9 +1,10 @@
-package ipools
+package istorage
 
 import (
 	"context"
 	"fmt"
 
+	"github.com/starter-go/application"
 	"github.com/starter-go/buckets"
 	"github.com/starter-go/media-pool/common/classes/pools"
 )
@@ -45,6 +46,20 @@ func (inst *DefaultBucketHolder) innerLoadBucket(c context.Context) (buckets.Buc
 	return inst.Loader.LoadBucket(c)
 }
 
+func (inst *DefaultBucketHolder) onload() error {
+
+	ctx := context.Background()
+	_, err := inst.GetBucket(ctx)
+
+	return err
+}
+
+func (inst *DefaultBucketHolder) Life() *application.Life {
+	l := new(application.Life)
+	l.OnStart = inst.onload
+	return l
+}
+
 func (inst *DefaultBucketHolder) _impl() pools.BucketHolder {
 	return inst
 }
@@ -57,11 +72,17 @@ type DefaultBucketLoader struct {
 
 	_as func(pools.BucketLoader) //starter:as("#")
 
+	BucketSer buckets.Service //starter:inject("#")
+
+	BucketName string //starter:inject("${mediapool.bucket.name}")
+
 }
 
 // LoadBucket implements pools.BucketLoader.
-func (inst *DefaultBucketLoader) LoadBucket(c context.Context) (buckets.Bucket, error) {
-	panic("unimplemented")
+func (inst *DefaultBucketLoader) LoadBucket(ctx context.Context) (buckets.Bucket, error) {
+
+	name := inst.BucketName
+	return inst.BucketSer.GetBucket(ctx, name)
 }
 
 func (inst *DefaultBucketLoader) _impl() pools.BucketLoader {

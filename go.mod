@@ -3,6 +3,7 @@ module github.com/starter-go/media-pool
 go 1.23
 
 require (
+	github.com/aliyun/alibabacloud-oss-go-sdk-v2 v1.4.0 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
@@ -22,6 +23,7 @@ require (
 	github.com/starter-go/afs v0.9.13 // indirect
 	github.com/starter-go/application v0.9.27 // indirect
 	github.com/starter-go/base v0.9.11 // indirect
+	github.com/starter-go/bucket-drivers/aliyun v0.0.1 // indirect
 	github.com/starter-go/buckets v0.0.4 // indirect
 	github.com/starter-go/configen v0.9.5 // indirect
 	github.com/starter-go/i18n v0.0.4 // indirect
@@ -40,6 +42,7 @@ require (
 	golang.org/x/net v0.10.0 // indirect
 	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
+	golang.org/x/time v0.4.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

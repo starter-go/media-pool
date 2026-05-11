@@ -1,11 +1,12 @@
 package server4mediapool
 import (
+    p262c04a06 "github.com/starter-go/buckets"
     pd1a916a20 "github.com/starter-go/libgin"
     p46220f67d "github.com/starter-go/media-pool/common/classes/objects"
     p4868bf213 "github.com/starter-go/media-pool/common/classes/pools"
     pdfc4d7922 "github.com/starter-go/media-pool/server"
     p8d6dba9bf "github.com/starter-go/media-pool/server/implements/iobjects"
-    pe2332cb1b "github.com/starter-go/media-pool/server/implements/ipools"
+    pfc90c21d1 "github.com/starter-go/media-pool/server/implements/istorage"
     p474aadc6b "github.com/starter-go/media-pool/server/web/controllers"
      "github.com/starter-go/application"
 )
@@ -136,19 +137,19 @@ func (inst* p8d6dba9bfd_iobjects_ObjectServiceImpl) inject(injext application.In
 
 
 
-// type pe2332cb1b.DefaultBucketHolder in package:github.com/starter-go/media-pool/server/implements/ipools
+// type pfc90c21d1.DefaultBucketHolder in package:github.com/starter-go/media-pool/server/implements/istorage
 //
-// id:com-e2332cb1bdc14a93-ipools-DefaultBucketHolder
+// id:com-fc90c21d18000bd9-istorage-DefaultBucketHolder
 // class:
 // alias:alias-4868bf21398de71b737baf5a174a3530-BucketHolder
 // scope:singleton
 //
-type pe2332cb1bd_ipools_DefaultBucketHolder struct {
+type pfc90c21d18_istorage_DefaultBucketHolder struct {
 }
 
-func (inst* pe2332cb1bd_ipools_DefaultBucketHolder) register(cr application.ComponentRegistry) error {
+func (inst* pfc90c21d18_istorage_DefaultBucketHolder) register(cr application.ComponentRegistry) error {
 	r := cr.NewRegistration()
-	r.ID = "com-e2332cb1bdc14a93-ipools-DefaultBucketHolder"
+	r.ID = "com-fc90c21d18000bd9-istorage-DefaultBucketHolder"
 	r.Classes = ""
 	r.Aliases = "alias-4868bf21398de71b737baf5a174a3530-BucketHolder"
 	r.Scope = "singleton"
@@ -157,13 +158,13 @@ func (inst* pe2332cb1bd_ipools_DefaultBucketHolder) register(cr application.Comp
 	return r.Commit()
 }
 
-func (inst* pe2332cb1bd_ipools_DefaultBucketHolder) new() any {
-    return &pe2332cb1b.DefaultBucketHolder{}
+func (inst* pfc90c21d18_istorage_DefaultBucketHolder) new() any {
+    return &pfc90c21d1.DefaultBucketHolder{}
 }
 
-func (inst* pe2332cb1bd_ipools_DefaultBucketHolder) inject(injext application.InjectionExt, instance any) error {
+func (inst* pfc90c21d18_istorage_DefaultBucketHolder) inject(injext application.InjectionExt, instance any) error {
 	ie := injext
-	com := instance.(*pe2332cb1b.DefaultBucketHolder)
+	com := instance.(*pfc90c21d1.DefaultBucketHolder)
 	nop(ie, com)
 
 	
@@ -174,25 +175,25 @@ func (inst* pe2332cb1bd_ipools_DefaultBucketHolder) inject(injext application.In
 }
 
 
-func (inst*pe2332cb1bd_ipools_DefaultBucketHolder) getLoader(ie application.InjectionExt)p4868bf213.BucketLoader{
+func (inst*pfc90c21d18_istorage_DefaultBucketHolder) getLoader(ie application.InjectionExt)p4868bf213.BucketLoader{
     return ie.GetComponent("#alias-4868bf21398de71b737baf5a174a3530-BucketLoader").(p4868bf213.BucketLoader)
 }
 
 
 
-// type pe2332cb1b.DefaultBucketLoader in package:github.com/starter-go/media-pool/server/implements/ipools
+// type pfc90c21d1.DefaultBucketLoader in package:github.com/starter-go/media-pool/server/implements/istorage
 //
-// id:com-e2332cb1bdc14a93-ipools-DefaultBucketLoader
+// id:com-fc90c21d18000bd9-istorage-DefaultBucketLoader
 // class:
 // alias:alias-4868bf21398de71b737baf5a174a3530-BucketLoader
 // scope:singleton
 //
-type pe2332cb1bd_ipools_DefaultBucketLoader struct {
+type pfc90c21d18_istorage_DefaultBucketLoader struct {
 }
 
-func (inst* pe2332cb1bd_ipools_DefaultBucketLoader) register(cr application.ComponentRegistry) error {
+func (inst* pfc90c21d18_istorage_DefaultBucketLoader) register(cr application.ComponentRegistry) error {
 	r := cr.NewRegistration()
-	r.ID = "com-e2332cb1bdc14a93-ipools-DefaultBucketLoader"
+	r.ID = "com-fc90c21d18000bd9-istorage-DefaultBucketLoader"
 	r.Classes = ""
 	r.Aliases = "alias-4868bf21398de71b737baf5a174a3530-BucketLoader"
 	r.Scope = "singleton"
@@ -201,51 +202,63 @@ func (inst* pe2332cb1bd_ipools_DefaultBucketLoader) register(cr application.Comp
 	return r.Commit()
 }
 
-func (inst* pe2332cb1bd_ipools_DefaultBucketLoader) new() any {
-    return &pe2332cb1b.DefaultBucketLoader{}
+func (inst* pfc90c21d18_istorage_DefaultBucketLoader) new() any {
+    return &pfc90c21d1.DefaultBucketLoader{}
 }
 
-func (inst* pe2332cb1bd_ipools_DefaultBucketLoader) inject(injext application.InjectionExt, instance any) error {
+func (inst* pfc90c21d18_istorage_DefaultBucketLoader) inject(injext application.InjectionExt, instance any) error {
 	ie := injext
-	com := instance.(*pe2332cb1b.DefaultBucketLoader)
+	com := instance.(*pfc90c21d1.DefaultBucketLoader)
 	nop(ie, com)
 
 	
+    com.BucketSer = inst.getBucketSer(ie)
+    com.BucketName = inst.getBucketName(ie)
 
 
     return nil
 }
 
 
-
-// type pe2332cb1b.DefaultPoolService in package:github.com/starter-go/media-pool/server/implements/ipools
-//
-// id:com-e2332cb1bdc14a93-ipools-DefaultPoolService
-// class:
-// alias:alias-4868bf21398de71b737baf5a174a3530-Service
-// scope:singleton
-//
-type pe2332cb1bd_ipools_DefaultPoolService struct {
+func (inst*pfc90c21d18_istorage_DefaultBucketLoader) getBucketSer(ie application.InjectionExt)p262c04a06.Service{
+    return ie.GetComponent("#alias-262c04a06c32904104382e2b8d56c279-Service").(p262c04a06.Service)
 }
 
-func (inst* pe2332cb1bd_ipools_DefaultPoolService) register(cr application.ComponentRegistry) error {
+
+func (inst*pfc90c21d18_istorage_DefaultBucketLoader) getBucketName(ie application.InjectionExt)string{
+    return ie.GetString("${mediapool.bucket.name}")
+}
+
+
+
+// type pfc90c21d1.ObjectStoragePoolFilter in package:github.com/starter-go/media-pool/server/implements/istorage
+//
+// id:com-fc90c21d18000bd9-istorage-ObjectStoragePoolFilter
+// class:class-46220f67d06e6dbd28c3603d4b14f6ae-FilterRegistry
+// alias:
+// scope:singleton
+//
+type pfc90c21d18_istorage_ObjectStoragePoolFilter struct {
+}
+
+func (inst* pfc90c21d18_istorage_ObjectStoragePoolFilter) register(cr application.ComponentRegistry) error {
 	r := cr.NewRegistration()
-	r.ID = "com-e2332cb1bdc14a93-ipools-DefaultPoolService"
-	r.Classes = ""
-	r.Aliases = "alias-4868bf21398de71b737baf5a174a3530-Service"
+	r.ID = "com-fc90c21d18000bd9-istorage-ObjectStoragePoolFilter"
+	r.Classes = "class-46220f67d06e6dbd28c3603d4b14f6ae-FilterRegistry"
+	r.Aliases = ""
 	r.Scope = "singleton"
 	r.NewFunc = inst.new
 	r.InjectFunc = inst.inject
 	return r.Commit()
 }
 
-func (inst* pe2332cb1bd_ipools_DefaultPoolService) new() any {
-    return &pe2332cb1b.DefaultPoolService{}
+func (inst* pfc90c21d18_istorage_ObjectStoragePoolFilter) new() any {
+    return &pfc90c21d1.ObjectStoragePoolFilter{}
 }
 
-func (inst* pe2332cb1bd_ipools_DefaultPoolService) inject(injext application.InjectionExt, instance any) error {
+func (inst* pfc90c21d18_istorage_ObjectStoragePoolFilter) inject(injext application.InjectionExt, instance any) error {
 	ie := injext
-	com := instance.(*pe2332cb1b.DefaultPoolService)
+	com := instance.(*pfc90c21d1.ObjectStoragePoolFilter)
 	nop(ie, com)
 
 	
@@ -256,7 +269,7 @@ func (inst* pe2332cb1bd_ipools_DefaultPoolService) inject(injext application.Inj
 }
 
 
-func (inst*pe2332cb1bd_ipools_DefaultPoolService) getBH(ie application.InjectionExt)p4868bf213.BucketHolder{
+func (inst*pfc90c21d18_istorage_ObjectStoragePoolFilter) getBH(ie application.InjectionExt)p4868bf213.BucketHolder{
     return ie.GetComponent("#alias-4868bf21398de71b737baf5a174a3530-BucketHolder").(p4868bf213.BucketHolder)
 }
 
@@ -306,19 +319,19 @@ func (inst*p474aadc6be_controllers_ExampleController) getSender(ie application.I
 
 
 
-// type p474aadc6b.MediaController in package:github.com/starter-go/media-pool/server/web/controllers
+// type p474aadc6b.ObjectDownloadController in package:github.com/starter-go/media-pool/server/web/controllers
 //
-// id:com-474aadc6bee2144f-controllers-MediaController
+// id:com-474aadc6bee2144f-controllers-ObjectDownloadController
 // class:class-d1a916a203352fd5d33eabc36896b42e-Controller
 // alias:
 // scope:singleton
 //
-type p474aadc6be_controllers_MediaController struct {
+type p474aadc6be_controllers_ObjectDownloadController struct {
 }
 
-func (inst* p474aadc6be_controllers_MediaController) register(cr application.ComponentRegistry) error {
+func (inst* p474aadc6be_controllers_ObjectDownloadController) register(cr application.ComponentRegistry) error {
 	r := cr.NewRegistration()
-	r.ID = "com-474aadc6bee2144f-controllers-MediaController"
+	r.ID = "com-474aadc6bee2144f-controllers-ObjectDownloadController"
 	r.Classes = "class-d1a916a203352fd5d33eabc36896b42e-Controller"
 	r.Aliases = ""
 	r.Scope = "singleton"
@@ -327,13 +340,13 @@ func (inst* p474aadc6be_controllers_MediaController) register(cr application.Com
 	return r.Commit()
 }
 
-func (inst* p474aadc6be_controllers_MediaController) new() any {
-    return &p474aadc6b.MediaController{}
+func (inst* p474aadc6be_controllers_ObjectDownloadController) new() any {
+    return &p474aadc6b.ObjectDownloadController{}
 }
 
-func (inst* p474aadc6be_controllers_MediaController) inject(injext application.InjectionExt, instance any) error {
+func (inst* p474aadc6be_controllers_ObjectDownloadController) inject(injext application.InjectionExt, instance any) error {
 	ie := injext
-	com := instance.(*p474aadc6b.MediaController)
+	com := instance.(*p474aadc6b.ObjectDownloadController)
 	nop(ie, com)
 
 	
@@ -345,12 +358,62 @@ func (inst* p474aadc6be_controllers_MediaController) inject(injext application.I
 }
 
 
-func (inst*p474aadc6be_controllers_MediaController) getSender(ie application.InjectionExt)pd1a916a20.Responder{
+func (inst*p474aadc6be_controllers_ObjectDownloadController) getSender(ie application.InjectionExt)pd1a916a20.Responder{
     return ie.GetComponent("#alias-d1a916a203352fd5d33eabc36896b42e-Responder").(pd1a916a20.Responder)
 }
 
 
-func (inst*p474aadc6be_controllers_MediaController) getService(ie application.InjectionExt)p46220f67d.Server{
+func (inst*p474aadc6be_controllers_ObjectDownloadController) getService(ie application.InjectionExt)p46220f67d.Server{
+    return ie.GetComponent("#alias-46220f67d06e6dbd28c3603d4b14f6ae-Server").(p46220f67d.Server)
+}
+
+
+
+// type p474aadc6b.ObjectUploadController in package:github.com/starter-go/media-pool/server/web/controllers
+//
+// id:com-474aadc6bee2144f-controllers-ObjectUploadController
+// class:class-d1a916a203352fd5d33eabc36896b42e-Controller
+// alias:
+// scope:singleton
+//
+type p474aadc6be_controllers_ObjectUploadController struct {
+}
+
+func (inst* p474aadc6be_controllers_ObjectUploadController) register(cr application.ComponentRegistry) error {
+	r := cr.NewRegistration()
+	r.ID = "com-474aadc6bee2144f-controllers-ObjectUploadController"
+	r.Classes = "class-d1a916a203352fd5d33eabc36896b42e-Controller"
+	r.Aliases = ""
+	r.Scope = "singleton"
+	r.NewFunc = inst.new
+	r.InjectFunc = inst.inject
+	return r.Commit()
+}
+
+func (inst* p474aadc6be_controllers_ObjectUploadController) new() any {
+    return &p474aadc6b.ObjectUploadController{}
+}
+
+func (inst* p474aadc6be_controllers_ObjectUploadController) inject(injext application.InjectionExt, instance any) error {
+	ie := injext
+	com := instance.(*p474aadc6b.ObjectUploadController)
+	nop(ie, com)
+
+	
+    com.Sender = inst.getSender(ie)
+    com.Service = inst.getService(ie)
+
+
+    return nil
+}
+
+
+func (inst*p474aadc6be_controllers_ObjectUploadController) getSender(ie application.InjectionExt)pd1a916a20.Responder{
+    return ie.GetComponent("#alias-d1a916a203352fd5d33eabc36896b42e-Responder").(pd1a916a20.Responder)
+}
+
+
+func (inst*p474aadc6be_controllers_ObjectUploadController) getService(ie application.InjectionExt)p46220f67d.Server{
     return ie.GetComponent("#alias-46220f67d06e6dbd28c3603d4b14f6ae-Server").(p46220f67d.Server)
 }
 

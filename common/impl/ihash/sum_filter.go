@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/starter-go/base/lang"
 	"github.com/starter-go/media-pool/common/classes/layers"
 	"github.com/starter-go/media-pool/common/classes/objects"
 )
@@ -18,9 +19,10 @@ type SumFilterLayer struct {
 }
 
 // Put implements objects.UploadFilter.
-func (inst *SumFilterLayer) Put(o *objects.Object, next objects.UploadFilterChain) error {
+func (inst *SumFilterLayer) Put(c *objects.IOContext, next objects.UploadFilterChain) error {
 
-	sum, err := inst.computeSum(o)
+	want := c.Want
+	sum, err := inst.computeSum(want)
 
 	// sum2, err2 := inst.computeSum(o)
 	// sum3, err3 := inst.computeSum(o)
@@ -29,9 +31,9 @@ func (inst *SumFilterLayer) Put(o *objects.Object, next objects.UploadFilterChai
 	if err != nil {
 		return err
 	}
-	o.Sum = sum
+	want.Sum = sum
 
-	return next.Put(o)
+	return next.Put(c)
 }
 
 func (inst *SumFilterLayer) computeSum(o *objects.Object) (objects.Sum, error) {
@@ -61,9 +63,16 @@ func (inst *SumFilterLayer) computeSum(o *objects.Object) (objects.Sum, error) {
 }
 
 // Fetch implements objects.DownloadFilter.
-func (inst *SumFilterLayer) Fetch(o *objects.Object, next objects.DownloadFilterChain) error {
+func (inst *SumFilterLayer) Fetch(c *objects.IOContext, next objects.DownloadFilterChain) error {
 
-	return next.Fetch(o)
+	want := c.Want
+	id := want.ID
+	hex := lang.Hex(id.String())
+	bin := hex.Bytes()
+
+	want.Sum = objects.Sum(bin)
+
+	return next.Fetch(c)
 }
 
 // ListFilters implements objects.FilterRegistry.

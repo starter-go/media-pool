@@ -153,7 +153,7 @@ type innerUploadFilterChainNode struct {
 }
 
 // Put implements UploadFilterChain.
-func (i *innerUploadFilterChainNode) Put(o *Object) error {
+func (i *innerUploadFilterChainNode) Put(o *IOContext) error {
 	f := i.f
 	n := i.next
 	return f.Put(o, n)
@@ -166,7 +166,7 @@ type innerUploadFilterChainEnding struct {
 }
 
 // Put implements UploadFilterChain.
-func (i *innerUploadFilterChainEnding) Put(o *Object) error {
+func (i *innerUploadFilterChainEnding) Put(o *IOContext) error {
 	// NOP
 	return nil
 }

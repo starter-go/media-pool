@@ -17,15 +17,27 @@ type Path = dxo.ObjectPath
 ////////////////////////////////////////////////////////////////////////////////
 
 type CacheFile struct {
-	File afs.Path
-	Path Path
+	File          afs.Path
+	Path          Path
+	ContentType   string
+	ContentLength int64
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 type CacheFileSet struct {
-	Data *CacheFile
-	Meta *CacheFile
+	Data *CacheFile // '{{_sum}}'
+
+	Meta *CacheFile // '{{_sum}}.meta'
+
+	Thumbnail32   *CacheFile // '{{_sum}}.thumb_32.jpg'
+	Thumbnail64   *CacheFile // '{{_sum}}.thumb_64.jpg'
+	Thumbnail128  *CacheFile // '{{_sum}}.thumb_128.jpg'
+	Thumbnail256  *CacheFile // '{{_sum}}.thumb_256.jpg'
+	Thumbnail512  *CacheFile // '{{_sum}}.thumb_512.jpg'
+	Thumbnail1024 *CacheFile // '{{_sum}}.thumb_1024.jpg'
+
+	ThumbnailSelected *CacheFile
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +54,15 @@ type Object struct {
 
 	Path Path
 
+	Profile Profile
+
 	TempFile afs.Path
+
+	UseMeta  bool
+	UseData  bool
+	UseThumb bool
+
+	ThumbSize int
 
 	// CacheFile afs.Path
 
@@ -53,6 +73,8 @@ type Object struct {
 	Name string
 
 	Type string // the Content-Type
+
+	Meta MetaHeaders
 
 	Data streams.Source
 }

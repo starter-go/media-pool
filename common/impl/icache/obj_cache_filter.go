@@ -1,11 +1,15 @@
 package icache
 
 import (
+	"encoding/hex"
 	"fmt"
 	"io"
+	"strconv"
 
 	"github.com/starter-go/afs"
 	"github.com/starter-go/application"
+	"github.com/starter-go/application/properties"
+	"github.com/starter-go/media-pool/common/classes/files"
 	"github.com/starter-go/media-pool/common/classes/layers"
 	"github.com/starter-go/media-pool/common/classes/objects"
 	"github.com/starter-go/media-pool/common/classes/streams"
@@ -18,44 +22,181 @@ type ObjectCacheFilterLayer struct {
 
 	_as func(objects.FilterRegistry) //starter:as(".")
 
-	MPCacheDir string //starter:inject("${media-pool.cache.dir}")
+	MPCacheDir string //starter:inject("${mediapool.cache.dir}")
 	FS         afs.FS //starter:inject("#")
 
 	cacheDirPath afs.Path
 }
 
 // Put implements objects.UploadFilter.
-func (inst *ObjectCacheFilterLayer) Put(o *objects.Object, next objects.UploadFilterChain) error {
+func (inst *ObjectCacheFilterLayer) Put(c *objects.IOContext, next objects.UploadFilterChain) error {
 
-	inst.innerPrepareCacheFilePath(o)
+	want := c.Want
 
-	fileData, fileMeta := inst.innerGetDataAndMetaFile(o)
+	inst.innerPrepareCacheFilePath(want)
+
+	fileData, fileMeta := inst.innerGetDataAndMetaFile(want)
 	vlog.Debug("file(data) = %s", fileData.GetPath())
 	vlog.Debug("file(meta) = %s", fileMeta.GetPath())
 
-	err := inst.innerPutDataFile(o)
+	err := inst.innerPutDataFile(want)
 	if err != nil {
 		return err
 	}
 
-	err = inst.innerPutMetaFile(o)
+	err = inst.innerPutMetaFile(want)
 	if err != nil {
 		return err
 	}
 
-	return next.Put(o)
+	return next.Put(c)
 }
 
 // Fetch implements objects.DownloadFilter.
-func (inst *ObjectCacheFilterLayer) Fetch(o *objects.Object, next objects.DownloadFilterChain) error {
+func (inst *ObjectCacheFilterLayer) Fetch(c *objects.IOContext, next objects.DownloadFilterChain) error {
 
-	inst.innerPrepareCacheFilePath(o)
+	want := c.Want
+	countDone := 0
 
-	fileData, fileMeta := inst.innerGetDataAndMetaFile(o)
-	vlog.Debug("file(data) = %s", fileData.GetPath())
-	vlog.Debug("file(meta) = %s", fileMeta.GetPath())
+	inst.innerPrepareCacheFilePath(want)
 
-	return next.Fetch(o)
+	if want.UseData {
+		err := inst.innerDoFetchData(c, next)
+		if err != nil {
+			return err
+		}
+		countDone++
+	}
+
+	if want.UseMeta {
+		err := inst.innerDoFetchMeta(c, next)
+		if err != nil {
+			return err
+		}
+		countDone++
+	}
+
+	if want.UseThumb {
+		err := inst.innerDoFetchThumb(c, next)
+		if err != nil {
+			return err
+		}
+		countDone++
+	}
+
+	if countDone > 0 {
+		return nil
+	}
+
+	return inst.innerDoFetchMeta(c, next)
+}
+
+func (inst *ObjectCacheFilterLayer) innerDoFetchData(c *objects.IOContext, next objects.DownloadFilterChain) error {
+
+	want := c.Want
+	cf := want.Files.Data
+	file := cf.File
+
+	have := c.Have
+	if have == nil {
+		have = new(objects.Object)
+		c.Have = have
+	}
+
+	if !file.Exists() {
+		err := next.Fetch(c)
+		if err != nil {
+			return err
+		}
+	}
+
+	if file.Exists() {
+		have.Files.Data = cf
+	}
+
+	return nil
+}
+
+func (inst *ObjectCacheFilterLayer) innerDoFetchMeta(c *objects.IOContext, next objects.DownloadFilterChain) error {
+
+	want := c.Want
+	cf := want.Files.Meta
+	file := cf.File
+
+	if !file.Exists() {
+		err := next.Fetch(c)
+		if err != nil {
+			return err
+		}
+	}
+
+	if !file.Exists() {
+		id := want.ID
+		return fmt.Errorf("no wanted object-meta: object.id=%s", id)
+	}
+
+	have := c.Have
+	if have == nil {
+		have = new(objects.Object)
+		c.Have = have
+	}
+
+	err := inst.innerLoadMetaFromCachedFile(cf, have)
+	if err != nil {
+		return err
+	}
+
+	have.Context = want.Context
+	have.Files.Meta = want.Files.Meta
+	have.Profile = want.Profile
+
+	c.Have = have
+	return nil
+}
+
+func (inst *ObjectCacheFilterLayer) innerLoadMetaFromCachedFile(src *objects.CacheFile, dst *objects.Object) error {
+
+	file := src.File
+	txt, err := file.GetIO().ReadText(nil)
+	if err != nil {
+		return err
+	}
+
+	pt, err := properties.Parse(txt, nil)
+	if err != nil {
+		return err
+	}
+
+	headers, err := objects.LoadMetaHeaders(pt)
+	if err != nil {
+		return err
+	}
+
+	strPath := headers.GetValue(objects.META_PATH)
+	strSize := headers.GetValue(objects.META_LENGTH)
+	strSum := headers.GetValue(objects.META_SUM)
+	strID := headers.GetValue(objects.META_ID)
+
+	nSize, _ := strconv.ParseInt(strSize, 10, 64)
+	hexSum, _ := hex.DecodeString(strSum)
+
+	if len(hexSum) == 32 {
+		dst.Sum = objects.Sum(hexSum)
+	}
+
+	dst.ID = objects.ID(strID)
+	dst.Name = headers.GetValue(objects.META_NAME)
+	dst.Type = headers.GetValue(objects.META_TYPE)
+	dst.Path = objects.Path(strPath)
+	dst.Size = nSize
+	dst.Meta = headers
+
+	return nil
+}
+
+func (inst *ObjectCacheFilterLayer) innerDoFetchThumb(c *objects.IOContext, next objects.DownloadFilterChain) error {
+
+	return fmt.Errorf("innerDoFetchThumb: no impl")
 }
 
 func (inst *ObjectCacheFilterLayer) innerPrepareCacheFilePath(o *objects.Object) {
@@ -66,6 +207,22 @@ func (inst *ObjectCacheFilterLayer) innerPrepareCacheFilePath(o *objects.Object)
 
 	o.Files.Data = &objects.CacheFile{Path: p2d}
 	o.Files.Meta = &objects.CacheFile{Path: p2m}
+
+	if o.UseThumb {
+
+		// todo ...
+
+		// sizeList := []int{32, 64, 128, 256, 512, 1024}
+		// cfileMap := make(map[int]*objects.CacheFile)
+
+		// o.Files.Thumbnail32 = cfileMap[32]
+		// o.Files.Thumbnail64 = cfileMap[64]
+		// o.Files.Thumbnail128 = cfileMap[128]
+		// o.Files.Thumbnail256 = cfileMap[256]
+		// o.Files.Thumbnail512 = cfileMap[512]
+		// o.Files.Thumbnail1024 = cfileMap[1024]
+
+	}
 
 	inst.innerMakeCacheFileComplete(o.Files.Data)
 	inst.innerMakeCacheFileComplete(o.Files.Meta)
@@ -189,6 +346,15 @@ func (inst *ObjectCacheFilterLayer) onCreate() error {
 	path := inst.MPCacheDir
 	dir := inst.FS.NewPath(path)
 	inst.cacheDirPath = dir
+
+	vlog.Info("local-cache-dir = %s", dir.GetPath())
+
+	if !dir.Exists() {
+		err := dir.Mkdirs(files.GetOptionForMakeDir())
+		if err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
