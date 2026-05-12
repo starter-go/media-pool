@@ -211,6 +211,50 @@ func (inst* peab9883210_ipath_PathMakerFilterLayer) inject(injext application.In
 
 
 
+// type peab988321.WebLocationMakerFilter in package:github.com/starter-go/media-pool/common/impl/ipath
+//
+// id:com-eab9883210a51acc-ipath-WebLocationMakerFilter
+// class:class-46220f67d06e6dbd28c3603d4b14f6ae-FilterRegistry
+// alias:
+// scope:singleton
+//
+type peab9883210_ipath_WebLocationMakerFilter struct {
+}
+
+func (inst* peab9883210_ipath_WebLocationMakerFilter) register(cr application.ComponentRegistry) error {
+	r := cr.NewRegistration()
+	r.ID = "com-eab9883210a51acc-ipath-WebLocationMakerFilter"
+	r.Classes = "class-46220f67d06e6dbd28c3603d4b14f6ae-FilterRegistry"
+	r.Aliases = ""
+	r.Scope = "singleton"
+	r.NewFunc = inst.new
+	r.InjectFunc = inst.inject
+	return r.Commit()
+}
+
+func (inst* peab9883210_ipath_WebLocationMakerFilter) new() any {
+    return &peab988321.WebLocationMakerFilter{}
+}
+
+func (inst* peab9883210_ipath_WebLocationMakerFilter) inject(injext application.InjectionExt, instance any) error {
+	ie := injext
+	com := instance.(*peab988321.WebLocationMakerFilter)
+	nop(ie, com)
+
+	
+    com.RawBaseObjectURL = inst.getRawBaseObjectURL(ie)
+
+
+    return nil
+}
+
+
+func (inst*peab9883210_ipath_WebLocationMakerFilter) getRawBaseObjectURL(ie application.InjectionExt)string{
+    return ie.GetString("${mediapool.web.objects-base-url}")
+}
+
+
+
 // type p72ff7347b.TempFileFilterLayer in package:github.com/starter-go/media-pool/common/impl/itempfile
 //
 // id:com-72ff7347bb4ab226-itempfile-TempFileFilterLayer

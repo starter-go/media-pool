@@ -38,6 +38,7 @@ func (inst *PathMakerFilterLayer) Fetch(o *objects.IOContext, next objects.Downl
 
 	want := o.Want
 	path := inst.innerMakePath(want)
+
 	want.Path = path
 
 	return next.Fetch(o)

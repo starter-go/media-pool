@@ -36,6 +36,7 @@ func (inst*autoRegistrar) addAll() error {
     inst.register(&p78c4450e8d_icache_ObjectCacheFilterLayer{})
     inst.register(&pc2ffe76390_ihash_SumFilterLayer{})
     inst.register(&peab9883210_ipath_PathMakerFilterLayer{})
+    inst.register(&peab9883210_ipath_WebLocationMakerFilter{})
 
 
     return nil

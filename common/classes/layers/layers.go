@@ -8,6 +8,7 @@ const (
 	PriorityMonitor
 
 	PriorityPath
+	PriorityURL
 	PrioritySum
 	PriorityBuffer
 	PriorityTemp
