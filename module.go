@@ -19,8 +19,8 @@ import (
 
 const (
 	theModuleName     = "github.com/starter-go/media-pool"
-	theModuleVersion  = "v0.0.0"
-	theModuleRevision = 0
+	theModuleVersion  = "v0.0.1"
+	theModuleRevision = 1
 )
 
 ////////////////////////////////////////////////////////////////////////////////
