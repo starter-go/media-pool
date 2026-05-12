@@ -114,7 +114,7 @@ func (inst *ObjectStoragePoolFilter) innerFetchFile(cc context.Context, want, ha
 
 	srcReader := o3.Data
 	if srcReader == nil {
-		return fmt.Errorf("")
+		return fmt.Errorf("data is nil")
 	}
 	defer srcReader.Close()
 

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/starter-go/afs"
+	"github.com/starter-go/base/lang"
 	"github.com/starter-go/media-pool/common/classes/streams"
 	"github.com/starter-go/media-pool/common/data/dxo"
 )
@@ -72,7 +73,11 @@ type Object struct {
 
 	Name string
 
+	Location dxo.URL
+
 	Type string // the Content-Type
+
+	CreatedAt lang.Time // aka.'Date'
 
 	Meta MetaHeaders
 

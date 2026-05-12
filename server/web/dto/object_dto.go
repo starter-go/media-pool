@@ -1,6 +1,8 @@
 package dto
 
 import (
+	"time"
+
 	"github.com/starter-go/base/lang"
 	"github.com/starter-go/media-pool/common/data/dxo"
 )
@@ -19,7 +21,11 @@ type Object struct {
 
 	Type string `json:"type"`
 
+	Date time.Time `json:"date"`
+
 	Sum lang.Hex `json:"sha256sum"`
 
 	Length int64 `json:"length"`
+
+	Location dxo.URL `json:"url"`
 }

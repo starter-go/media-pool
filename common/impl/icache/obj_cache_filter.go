@@ -9,6 +9,7 @@ import (
 	"github.com/starter-go/afs"
 	"github.com/starter-go/application"
 	"github.com/starter-go/application/properties"
+	"github.com/starter-go/base/lang"
 	"github.com/starter-go/media-pool/common/classes/files"
 	"github.com/starter-go/media-pool/common/classes/layers"
 	"github.com/starter-go/media-pool/common/classes/objects"
@@ -174,9 +175,11 @@ func (inst *ObjectCacheFilterLayer) innerLoadMetaFromCachedFile(src *objects.Cac
 
 	strPath := headers.GetValue(objects.META_PATH)
 	strSize := headers.GetValue(objects.META_LENGTH)
+	strDate := headers.GetValue(objects.META_DATE)
 	strSum := headers.GetValue(objects.META_SUM)
 	strID := headers.GetValue(objects.META_ID)
 
+	nDate, _ := strconv.ParseInt(strDate, 10, 64)
 	nSize, _ := strconv.ParseInt(strSize, 10, 64)
 	hexSum, _ := hex.DecodeString(strSum)
 
@@ -189,8 +192,9 @@ func (inst *ObjectCacheFilterLayer) innerLoadMetaFromCachedFile(src *objects.Cac
 	dst.Type = headers.GetValue(objects.META_TYPE)
 	dst.Path = objects.Path(strPath)
 	dst.Size = nSize
-	dst.Meta = headers
+	dst.CreatedAt = lang.Time(nDate)
 
+	dst.Meta = headers
 	return nil
 }
 
@@ -294,6 +298,9 @@ func (inst *ObjectCacheFilterLayer) innerPutDataFile(o *objects.Object) error {
 }
 
 func (inst *ObjectCacheFilterLayer) innerMakeMetaFor(o *objects.Object) *objects.Meta {
+
+	now := lang.Now()
+	o.CreatedAt = now
 
 	meta := new(objects.Meta)
 	meta.Info = *o

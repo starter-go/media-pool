@@ -344,22 +344,7 @@ func (inst *myMediaFetchRequest) doGetOneData() error {
 }
 
 func (inst *myMediaFetchRequest) innerConvertObject(src *objects.Object, dst *dto.Object) error {
-
-	if src == nil || dst == nil {
-		return fmt.Errorf("")
-	}
-
-	sum := src.Sum
-	strSum := sum.String()
-
-	dst.ID = src.ID
-	dst.Name = src.Name
-	dst.Type = src.Type
-	dst.Length = src.Size
-	dst.Sum = lang.Hex(strSum)
-	dst.Type = src.Type
-
-	return nil
+	return objects.Convert2DTO(src, dst)
 }
 
 func (inst *myMediaFetchRequest) doGetOneMeta() error {

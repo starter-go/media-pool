@@ -17,6 +17,7 @@ const (
 	META_TYPE   MetaFieldName = "type"
 	META_ID     MetaFieldName = "id"
 	META_PATH   MetaFieldName = "path"
+	META_DATE   MetaFieldName = "date"
 )
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -30,6 +31,7 @@ func (inst *Meta) Headers() MetaHeaders {
 	h := make(MetaHeaders)
 	size := inst.Size
 	src := inst.Meta
+	date := inst.CreatedAt
 
 	h[META_ID] = inst.ID.String()
 	h[META_SUM] = inst.Sum.String()
@@ -37,6 +39,7 @@ func (inst *Meta) Headers() MetaHeaders {
 	h[META_NAME] = inst.Name
 	h[META_PATH] = inst.Path.String()
 	h[META_LENGTH] = strconv.FormatInt(size, 10)
+	h[META_DATE] = strconv.FormatInt(date.Int(), 10)
 
 	for k, v := range src {
 		if v == "" {
@@ -100,6 +103,7 @@ func LoadMetaHeaders(src properties.Table) (MetaHeaders, error) {
 		META_PATH,
 		META_SUM,
 		META_TYPE,
+		META_DATE,
 	}
 
 	for _, shortName := range names {
@@ -127,11 +131,15 @@ func (headers MetaHeaders) Meta() *Meta {
 	strType := src[META_TYPE]
 	strLen := src[META_LENGTH]
 	strPath := src[META_PATH]
+	strDate := src[META_DATE]
 
 	size, _ := strconv.ParseInt(strLen, 10, 64)
+	nDate, _ := strconv.ParseInt(strDate, 10, 64)
 
 	hexSum := lang.Hex(strSum)
 	binSum := hexSum.Bytes()
+
+	dst.Meta = headers
 
 	dst.Sum = Sum(binSum)
 	dst.ID = ID(strID)
@@ -139,7 +147,7 @@ func (headers MetaHeaders) Meta() *Meta {
 	dst.Type = strType
 	dst.Size = size
 	dst.Path = Path(strPath)
-	dst.Meta = headers
+	dst.CreatedAt = lang.Time(nDate)
 
 	return dst
 }

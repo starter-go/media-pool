@@ -8,6 +8,7 @@ import (
 	"github.com/starter-go/libgin"
 	"github.com/starter-go/media-pool/common/classes/objects"
 	"github.com/starter-go/media-pool/common/classes/streams"
+	"github.com/starter-go/media-pool/server/web/dto"
 	"github.com/starter-go/media-pool/server/web/vo"
 
 	"github.com/starter-go/vlog"
@@ -136,9 +137,7 @@ func (inst *myMediaUploadRequest) handleUploadFile() error {
 	ctx := inst.context
 
 	for _, item := range items {
-
 		d := item.getData()
-
 		o := &objects.Object{
 			Context: ctx,
 			Size:    item.size,
@@ -150,13 +149,29 @@ func (inst *myMediaUploadRequest) handleUploadFile() error {
 			CC:   ctx,
 			Want: o,
 		}
-
 		err := ser.Put(ioc)
 		if err != nil {
 			return err
 		}
+		inst.innerHandleUploadResult(ioc.Have)
 	}
 
+	return nil
+}
+
+func (inst *myMediaUploadRequest) innerHandleUploadResult(res *objects.Object) error {
+
+	src := res
+	dst := new(dto.Object)
+
+	err := objects.Convert2DTO(src, dst)
+	if err != nil {
+		return err
+	}
+
+	list := inst.body2.Items
+	list = append(list, dst)
+	inst.body2.Items = list
 	return nil
 }
 
