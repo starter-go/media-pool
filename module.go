@@ -5,8 +5,12 @@ import (
 
 	"github.com/starter-go/application"
 	"github.com/starter-go/bucket-drivers/aliyun"
+	"github.com/starter-go/bucket-drivers/tencent"
 	"github.com/starter-go/buckets/modules/buckets"
 	"github.com/starter-go/libgin/modules/libgin"
+	"github.com/starter-go/libgorm/modules/libgorm"
+	"github.com/starter-go/module-gorm-mysql/modules/mysql"
+	"github.com/starter-go/security/modules/security"
 
 	"github.com/starter-go/media-pool/gen/client4mediapool"
 	"github.com/starter-go/media-pool/gen/common4mediapool"
@@ -91,9 +95,14 @@ func ModuleForServer() application.Module {
 
 	mb.Depend(ModuleForCommon())
 	mb.Depend(libgin.Module())
+	mb.Depend(libgorm.Module())
 	mb.Depend(buckets.ModuleLib())
+	mb.Depend(security.Module())
 
 	mb.Depend(aliyun.Module())
+	mb.Depend(tencent.Module())
+
+	mb.Depend(mysql.Module())
 
 	return mb.Create()
 }

@@ -28,6 +28,9 @@ func (inst *ExampleController) _impl() libgin.Controller {
 func (inst *ExampleController) Registration() *libgin.ControllerRegistration {
 	cr1 := new(libgin.ControllerRegistration)
 	cr1.Route = inst.route
+
+	cr1.Route = nil
+
 	return cr1
 }
 

@@ -33,11 +33,9 @@ export default {
   <div class="about">
     <h1> Todo: upload </h1>
 
-
-
     <el-upload v-model:file-list="fileList" class="upload-demo"
       action="/objects/application/img-type-2/0000/unnamed.gif" multiple :on-preview="handlePreview"
-      :on-remove="handleRemove" :before-remove="beforeRemove" :limit="3" :on-exceed="handleExceed">
+      :on-remove="handleRemove" :before-remove="beforeRemove" :limit="10" :on-exceed="handleExceed">
       <el-button type="primary">Click to upload</el-button>
       <template #tip>
         <div class="el-upload__tip">
@@ -45,7 +43,6 @@ export default {
         </div>
       </template>
     </el-upload>
-
 
   </div>
 </template>

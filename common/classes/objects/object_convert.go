@@ -13,21 +13,21 @@ func Convert2DTO(src *Object, dst *dto.Object) error {
 		return fmt.Errorf("param: src|dst is nil")
 	}
 
-	sum := src.Sum
+	meta := &src.Meta
+	sum := meta.Sum
 	strSum := sum.String()
-	date := src.CreatedAt
 
-	dst.ID = src.ID
-	dst.Name = src.Name
-	dst.Type = src.Type
-	dst.Length = src.Size
+	dst.ID = meta.ID
+	dst.Name = meta.Name
+	dst.Type = meta.Type
+	dst.Length = meta.Length
 	dst.Sum = lang.Hex(strSum)
-	dst.Type = src.Type
+	dst.Type = meta.Type
 	dst.Location = src.Location
 
-	dst.CreatedAt = date
-	dst.UpdatedAt = date
-	dst.Date = date.Time()
+	dst.CreatedAt = meta.CreatedAt
+	dst.UpdatedAt = meta.UpdatedAt
+	dst.Date = meta.UpdatedAt.Time()
 
 	return nil
 }

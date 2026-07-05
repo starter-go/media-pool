@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"mime/multipart"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/starter-go/libgin"
@@ -118,16 +117,22 @@ func (inst *myMediaUploadRequest) open() error {
 func (inst *myMediaUploadRequest) sendJson(err error) {
 
 	ctx := inst.context
+	body := &inst.body2
+	code := body.Status
+
+	sender := inst.controller.Sender
+	resp := new(libgin.Response)
+
+	resp.Context = ctx
+	resp.Data = body
+	resp.Error = err
+	resp.Status = code
 
 	if err != nil {
-		codeErr := http.StatusInternalServerError
-		ctx.AbortWithError(codeErr, err)
-		return
+		body.Items = nil
 	}
 
-	codeOk := http.StatusOK
-	body := &inst.body2
-	ctx.JSON(codeOk, body)
+	sender.Send(resp)
 }
 
 func (inst *myMediaUploadRequest) handleUploadFile() error {
@@ -139,12 +144,19 @@ func (inst *myMediaUploadRequest) handleUploadFile() error {
 	for _, item := range items {
 		d := item.getData()
 		o := &objects.Object{
-			Context: ctx,
-			Size:    item.size,
-			Name:    item.filename,
-			Type:    item.contentType,
-			Data:    d,
+			Context:  ctx,
+			Data:     d,
+			UseMeta:  true,
+			UseData:  true,
+			UseThumb: true,
+			UseTemp:  true,
 		}
+
+		meta := &o.Meta
+		meta.Length = item.size
+		meta.Type = item.contentType
+		meta.Name = item.filename
+
 		ioc := &objects.IOContext{
 			CC:   ctx,
 			Want: o,

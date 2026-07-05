@@ -6,6 +6,7 @@ type ObjectID string
 
 type ObjectPath string
 
+// ObjectSum: sha256sum(object)
 type ObjectSum = SHA256SUM
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -17,10 +18,13 @@ func (id ObjectID) String() string {
 ////////////////////////////////////////////////////////////////////////////////
 
 func (sum ObjectSum) String() string {
-
-	b := sum[:]
-	h := lang.HexFromBytes(b)
+	h := sum.Hex()
 	return h.String()
+}
+
+func (sum ObjectSum) Hex() lang.Hex {
+	b := sum[:]
+	return lang.HexFromBytes(b)
 }
 
 ////////////////////////////////////////////////////////////////////////////////

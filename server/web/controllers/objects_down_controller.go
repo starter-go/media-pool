@@ -196,8 +196,8 @@ func (inst *myMediaFetchRequest) sendFileData(cf *objects.CacheFile) error {
 	}
 
 	code := http.StatusOK
-	size1 := cf.ContentLength
-	ctype := cf.ContentType
+	size1 := cf.Length
+	ctype := cf.Type
 
 	info := path.GetInfo()
 	size2 := info.Length()
@@ -278,15 +278,22 @@ func (inst *myMediaFetchRequest) doGetOneThumb() error {
 	thumbSize := inst.paramThumbSize
 
 	want := &objects.Info{
-		Context:   ctx,
-		Profile:   objects.ProfileThumb,
-		ID:        id,
-		Name:      name,
-		Type:      ctype,
-		Data:      nil,
-		UseThumb:  true,
+		Context: ctx,
+		Profile: objects.ProfileThumb,
+		Data:    nil,
+
 		ThumbSize: thumbSize,
+
+		UseData:  true,
+		UseMeta:  true,
+		UseThumb: true,
 	}
+
+	meta := &want.Meta
+	meta.ID = id
+	meta.Name = name
+	meta.Type = ctype
+
 	ioc := &objects.IOContext{
 		CC:   ctx,
 		Want: want,
@@ -315,13 +322,17 @@ func (inst *myMediaFetchRequest) doGetOneData() error {
 	want := &objects.Info{
 		Context: ctx,
 		Profile: objects.ProfileData,
+		Data:    nil,
+
 		UseMeta: true,
 		UseData: true,
-		ID:      id,
-		Name:    name,
-		Type:    ctype,
-		Data:    nil,
 	}
+
+	meta := &want.Meta
+	meta.ID = id
+	meta.Name = name
+	meta.Type = ctype
+
 	ioc := &objects.IOContext{
 		CC:   ctx,
 		Want: want,
@@ -337,8 +348,8 @@ func (inst *myMediaFetchRequest) doGetOneData() error {
 	cf1d := fileSet.Data
 	// cf2m := fileSet.Meta
 
-	cf1d.ContentType = have.Type
-	cf1d.ContentLength = have.Size
+	cf1d.Type = have.Meta.Type
+	cf1d.Length = have.Meta.Length
 
 	return inst.sendFileData(cf1d)
 }
@@ -358,12 +369,17 @@ func (inst *myMediaFetchRequest) doGetOneMeta() error {
 	want := &objects.Info{
 		Context: ctx,
 		Profile: objects.ProfileMeta,
-		ID:      id,
-		Name:    name,
-		Type:    ctype,
 		Data:    nil,
+
+		UseData: true,
 		UseMeta: true,
 	}
+
+	meta := &want.Meta
+	meta.ID = id
+	meta.Name = name
+	meta.Type = ctype
+
 	ioc := &objects.IOContext{
 		CC:   ctx,
 		Want: want,

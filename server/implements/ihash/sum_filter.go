@@ -31,7 +31,7 @@ func (inst *SumFilterLayer) Put(c *objects.IOContext, next objects.UploadFilterC
 	if err != nil {
 		return err
 	}
-	want.Sum = sum
+	want.Meta.Sum = sum
 
 	return next.Put(c)
 }
@@ -53,7 +53,7 @@ func (inst *SumFilterLayer) computeSum(o *objects.Object) (objects.Sum, error) {
 	if err != nil {
 		return sum, err
 	}
-	if cb != o.Size {
+	if cb != o.Meta.Length {
 		return sum, fmt.Errorf("bad size")
 	}
 
@@ -66,11 +66,11 @@ func (inst *SumFilterLayer) computeSum(o *objects.Object) (objects.Sum, error) {
 func (inst *SumFilterLayer) Fetch(c *objects.IOContext, next objects.DownloadFilterChain) error {
 
 	want := c.Want
-	id := want.ID
+	id := want.Meta.ID
 	hex := lang.Hex(id.String())
 	bin := hex.Bytes()
 
-	want.Sum = objects.Sum(bin)
+	want.Meta.Sum = objects.Sum(bin)
 
 	return next.Fetch(c)
 }

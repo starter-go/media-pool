@@ -4,13 +4,13 @@ import (
 	"context"
 
 	"github.com/starter-go/afs"
-	"github.com/starter-go/base/lang"
 	"github.com/starter-go/media-pool/common/classes/streams"
 	"github.com/starter-go/media-pool/common/data/dxo"
 )
 
 type ID = dxo.ObjectID
 
+// 表示对象的sum, 固定为 sha-256 算法
 type Sum = dxo.ObjectSum
 
 type Path = dxo.ObjectPath
@@ -18,10 +18,11 @@ type Path = dxo.ObjectPath
 ////////////////////////////////////////////////////////////////////////////////
 
 type CacheFile struct {
-	File          afs.Path
-	Path          Path
-	ContentType   string
-	ContentLength int64
+	File   afs.Path
+	Path   Path
+	Suffix string
+	Type   string // content-type
+	Length int64  // content-length
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -38,7 +39,7 @@ type CacheFileSet struct {
 	Thumbnail512  *CacheFile // '{{_sum}}.thumb_512.jpg'
 	Thumbnail1024 *CacheFile // '{{_sum}}.thumb_1024.jpg'
 
-	ThumbnailSelected *CacheFile
+	Selected *CacheFile
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -49,39 +50,37 @@ type Object struct {
 
 	Context context.Context
 
-	ID ID
-
-	Sum Sum
-
-	Path Path
-
 	Profile Profile
+
+	ThumbSize int
 
 	TempFile afs.Path
 
 	UseMeta  bool
 	UseData  bool
+	UseTemp  bool
 	UseThumb bool
-
-	ThumbSize int
 
 	// CacheFile afs.Path
 
 	Files CacheFileSet
 
-	Size int64
-
-	Name string
+	Meta Meta
 
 	Location dxo.URL
 
-	Type string // the Content-Type
-
-	CreatedAt lang.Time // aka.'Date'
-
-	Meta MetaHeaders
-
 	Data streams.Source
+
+	// 这些字段已经废弃 , use Meta 代替
+
+	// ID        ID
+	// Name      string
+	// Sum       Sum
+	// Path      Path
+	// Type      string // the Content-Type
+	// Size      int64
+	// CreatedAt lang.Time // aka.'Date'
+
 }
 
 type Info = Object

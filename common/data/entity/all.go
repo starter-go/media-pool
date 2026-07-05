@@ -1,0 +1,34 @@
+package entity
+
+////////////////////////////////////////////////////////////////////////////////
+
+func ListEntities(prefix string) []any {
+
+	all := []any{}
+
+	all = append(all, new(MediaFile))
+
+	innerUpdateTableNamePrefix(prefix)
+	return all
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+var theTableNamePrefix string
+
+func innerUpdateTableNamePrefix(prefix string) {
+	const empty = ""
+	older := theTableNamePrefix
+	if older == empty {
+		theTableNamePrefix = prefix
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+func (MediaFile) TableName() string {
+	return theTableNamePrefix + "media_files"
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// EOF

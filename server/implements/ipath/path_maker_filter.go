@@ -21,12 +21,13 @@ func (inst *PathMakerFilterLayer) Put(c *objects.IOContext, next objects.UploadF
 	// make (id & path)
 
 	want := c.Want
+	meta := &want.Meta
 
 	id := inst.innerMakeID(want)
-	want.ID = id
+	meta.ID = id
 
 	path := inst.innerMakePath(want)
-	want.Path = path
+	meta.Path = path
 
 	return next.Put(c)
 }
@@ -39,7 +40,7 @@ func (inst *PathMakerFilterLayer) Fetch(o *objects.IOContext, next objects.Downl
 	want := o.Want
 	path := inst.innerMakePath(want)
 
-	want.Path = path
+	want.Meta.Path = path
 
 	return next.Fetch(o)
 }
@@ -53,7 +54,7 @@ func (inst *PathMakerFilterLayer) innerMakePath(o *objects.Object) objects.Path 
 
 func (inst *PathMakerFilterLayer) innerMakePurePath(o *objects.Object) string {
 
-	str := o.ID.String()
+	str := o.Meta.ID.String()
 	b := new(strings.Builder)
 	const count = 4
 	const partlen = 2
@@ -76,7 +77,7 @@ func (inst *PathMakerFilterLayer) innerMakePurePath(o *objects.Object) string {
 }
 
 func (inst *PathMakerFilterLayer) innerMakeID(o *objects.Object) objects.ID {
-	sum := o.Sum
+	sum := o.Meta.Sum
 	str := sum.String()
 	return objects.ID(str)
 }

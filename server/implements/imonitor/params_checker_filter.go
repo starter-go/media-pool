@@ -13,12 +13,15 @@ type ParamsCheckerFilter struct {
 
 	_as func(objects.FilterRegistry) //starter:as(".")
 
+	MaxContentLength int64 //starter:inject("${mediapool.web.max-content-length}")
+	MinContentLength int64 //starter:inject("${mediapool.web.min-content-length}")
+
 }
 
 // Put implements objects.UploadFilter.
 func (inst *ParamsCheckerFilter) Put(c *objects.IOContext, next objects.UploadFilterChain) error {
 
-	err := inst.innerCheckWant(c)
+	err := inst.innerCheckWantPut(c)
 	if err != nil {
 		return err
 	}
@@ -29,23 +32,47 @@ func (inst *ParamsCheckerFilter) Put(c *objects.IOContext, next objects.UploadFi
 // Fetch implements objects.DownloadFilter.
 func (inst *ParamsCheckerFilter) Fetch(c *objects.IOContext, next objects.DownloadFilterChain) error {
 
-	err := inst.innerCheckWant(c)
+	err := inst.innerCheckWantGet(c)
 	if err != nil {
 		return err
 	}
 
 	want := c.Want
-	if want.ID == "" {
+	meta := want.Meta
+
+	if meta.ID == "" {
 		return fmt.Errorf("ParamsCheckerFilter: param want.id is empty")
 	}
-	if want.Name == "" {
-		want.Name = "unnamed.file"
+	if meta.Name == "" {
+		meta.Name = "unnamed.file"
 	}
 
 	return next.Fetch(c)
 }
 
-func (inst *ParamsCheckerFilter) innerCheckWant(c *objects.IOContext) error {
+func (inst *ParamsCheckerFilter) innerCheckWantPut(c *objects.IOContext) error {
+
+	want := c.GetWant(true)
+	max := inst.MaxContentLength
+	min := inst.MinContentLength
+	size := want.Meta.Length
+
+	if size < min {
+		return fmt.Errorf("content-length(%d) is out of range : min(%d)", size, min)
+	}
+	if size > max {
+		return fmt.Errorf("content-length(%d) is out of range : max(%d)", size, max)
+	}
+
+	return inst.innerCheckWantCommon(c)
+}
+
+func (inst *ParamsCheckerFilter) innerCheckWantGet(c *objects.IOContext) error {
+
+	return inst.innerCheckWantCommon(c)
+}
+
+func (inst *ParamsCheckerFilter) innerCheckWantCommon(c *objects.IOContext) error {
 
 	if c == nil {
 		return fmt.Errorf("ParamsCheckerFilter: objects.IOContext is nil")

@@ -30,13 +30,7 @@ func (inst *autoRegistrar) register(factory comFactory) error {
 func (inst*autoRegistrar) addAll() error {
 
     
-    inst.register(&p33805c9ff5_imonitor_MonitorFilterLayer{})
-    inst.register(&p33805c9ff5_imonitor_ParamsCheckerFilter{})
-    inst.register(&p72ff7347bb_itempfile_TempFileFilterLayer{})
-    inst.register(&p78c4450e8d_icache_ObjectCacheFilterLayer{})
-    inst.register(&pc2ffe76390_ihash_SumFilterLayer{})
-    inst.register(&peab9883210_ipath_PathMakerFilterLayer{})
-    inst.register(&peab9883210_ipath_WebLocationMakerFilter{})
+    inst.register(&p2fe7d86b0c_icom_Example{})
 
 
     return nil

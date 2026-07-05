@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/starter-go/afs"
 	"github.com/starter-go/application/properties"
 	"github.com/starter-go/base/lang"
 )
+
+////////////////////////////////////////////////////////////////////////////////
 
 type MetaFieldName string
 
@@ -17,21 +20,67 @@ const (
 	META_TYPE   MetaFieldName = "type"
 	META_ID     MetaFieldName = "id"
 	META_PATH   MetaFieldName = "path"
-	META_DATE   MetaFieldName = "date"
+
+	META_DATE       MetaFieldName = "date"
+	META_CREATED_AT MetaFieldName = "created-at"
+	META_UPDATED_AT MetaFieldName = "updated-at"
 )
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// 以 struct 的形式表示 meta
 type Meta struct {
-	Info
+
+	// headers
+
+	Map MetaHeaders
+
+	// fields
+
+	ID ID
+
+	Name string // the simple-name of file
+
+	Sum Sum
+
+	Path Path
+
+	Length int64
+
+	Type string
+
+	CreatedAt lang.Time
+
+	UpdatedAt lang.Time
 }
+
+// 以 map 的形式表示 meta
+type MetaHeaders map[MetaFieldName]string
+
+// 以 properties 的形式表示 meta
+type MetaProperties = properties.Table
+
+////////////////////////////////////////////////////////////////////////////////
+
+type MetaContext struct {
+	File afs.Path
+
+	Meta *Meta
+
+	Map MetaHeaders
+
+	Properties MetaProperties
+}
+
+////////////////////////////////////////////////////////////////////////////////
 
 func (inst *Meta) Headers() MetaHeaders {
 
 	h := make(MetaHeaders)
-	size := inst.Size
-	src := inst.Meta
-	date := inst.CreatedAt
+	size := inst.Length
+	src := inst.Map
+	date1 := inst.CreatedAt
+	date2 := inst.UpdatedAt
 
 	h[META_ID] = inst.ID.String()
 	h[META_SUM] = inst.Sum.String()
@@ -39,7 +88,10 @@ func (inst *Meta) Headers() MetaHeaders {
 	h[META_NAME] = inst.Name
 	h[META_PATH] = inst.Path.String()
 	h[META_LENGTH] = strconv.FormatInt(size, 10)
-	h[META_DATE] = strconv.FormatInt(date.Int(), 10)
+
+	h[META_DATE] = strconv.FormatInt(date2.Int(), 10)
+	h[META_CREATED_AT] = strconv.FormatInt(date1.Int(), 10)
+	h[META_UPDATED_AT] = strconv.FormatInt(date2.Int(), 10)
 
 	for k, v := range src {
 		if v == "" {
@@ -57,8 +109,6 @@ func (inst *Meta) String() string {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
-type MetaHeaders map[MetaFieldName]string
 
 func (headers MetaHeaders) String() string {
 	props := headers.Properties()
@@ -103,7 +153,10 @@ func LoadMetaHeaders(src properties.Table) (MetaHeaders, error) {
 		META_PATH,
 		META_SUM,
 		META_TYPE,
+
 		META_DATE,
+		META_CREATED_AT,
+		META_UPDATED_AT,
 	}
 
 	for _, shortName := range names {
@@ -131,23 +184,26 @@ func (headers MetaHeaders) Meta() *Meta {
 	strType := src[META_TYPE]
 	strLen := src[META_LENGTH]
 	strPath := src[META_PATH]
-	strDate := src[META_DATE]
+	strDate1 := src[META_CREATED_AT]
+	strDate2 := src[META_UPDATED_AT]
 
 	size, _ := strconv.ParseInt(strLen, 10, 64)
-	nDate, _ := strconv.ParseInt(strDate, 10, 64)
+	nDate1, _ := strconv.ParseInt(strDate1, 10, 64)
+	nDate2, _ := strconv.ParseInt(strDate2, 10, 64)
 
 	hexSum := lang.Hex(strSum)
 	binSum := hexSum.Bytes()
 
-	dst.Meta = headers
+	dst.Map = headers
 
 	dst.Sum = Sum(binSum)
 	dst.ID = ID(strID)
 	dst.Name = strName
 	dst.Type = strType
-	dst.Size = size
+	dst.Length = size
 	dst.Path = Path(strPath)
-	dst.CreatedAt = lang.Time(nDate)
+	dst.CreatedAt = lang.Time(nDate1)
+	dst.UpdatedAt = lang.Time(nDate2)
 
 	return dst
 }

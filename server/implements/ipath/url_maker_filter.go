@@ -21,7 +21,19 @@ type WebLocationMakerFilter struct {
 
 // Put implements objects.UploadFilter.
 func (inst *WebLocationMakerFilter) Put(c *objects.IOContext, next objects.UploadFilterChain) error {
-	return next.Put(c)
+
+	err := next.Put(c)
+	if err != nil {
+		return err
+	}
+
+	o1 := c.GetWant(true)
+	o2 := c.GetHave(true)
+
+	location := inst.innerMakeObjectURL(o1)
+	o2.Location = location
+
+	return nil
 }
 
 // Fetch implements objects.DownloadFilter.
@@ -64,8 +76,9 @@ func (inst *WebLocationMakerFilter) innerGetBaseObjectURL() string {
 func (inst *WebLocationMakerFilter) innerMakeObjectURL(o *objects.Object) dxo.URL {
 
 	builder := new(strings.Builder)
-	id := o.ID.String()
-	name := o.Name
+	meta := &o.Meta
+	id := meta.ID.String()
+	name := meta.Name
 	base := inst.innerGetBaseObjectURL()
 
 	if name == "" {
@@ -91,7 +104,7 @@ func (inst *WebLocationMakerFilter) ListFilters() []*objects.FilterRegistration 
 		Priority: layers.PriorityURL,
 		Label:    "WebLocationMakerFilter",
 
-		Up:   nil,
+		Up:   inst,
 		Down: inst,
 	}
 

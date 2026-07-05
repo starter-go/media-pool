@@ -2,12 +2,8 @@ package istorage
 
 import (
 	"context"
-	"fmt"
-	"io"
 
-	"github.com/starter-go/afs"
 	"github.com/starter-go/buckets"
-	"github.com/starter-go/media-pool/common/classes/files"
 	"github.com/starter-go/media-pool/common/classes/layers"
 	"github.com/starter-go/media-pool/common/classes/objects"
 	"github.com/starter-go/media-pool/common/classes/pools"
@@ -27,20 +23,32 @@ type ObjectStoragePoolFilter struct {
 func (inst *ObjectStoragePoolFilter) Put(o *objects.IOContext, next objects.UploadFilterChain) error {
 
 	var err error
+
+	cc := o.CC
 	want := o.Want
+	have := o.Have
 	file1data := want.Files.Data
 	file2meta := want.Files.Meta
-	ctype := want.Type
+	ctype := want.Meta.Type
+
+	if have == nil {
+		have = new(objects.Object)
+		o.Have = have
+	}
+
+	// for data
 
 	if want.UseData {
-		err = inst.innerPutFile(want, ctype, file1data)
+		err = inst.innerPutFile(cc, want, have, file1data, ctype)
 		if err != nil {
 			return err
 		}
 	}
 
+	// for meta
+
 	if want.UseMeta {
-		err = inst.innerPutFile(want, "text/plain", file2meta)
+		err = inst.innerPutFile(cc, want, have, file2meta, "text/plain")
 		if err != nil {
 			return err
 		}
@@ -49,47 +57,41 @@ func (inst *ObjectStoragePoolFilter) Put(o *objects.IOContext, next objects.Uplo
 	return nil
 }
 
-func (inst *ObjectStoragePoolFilter) innerPutFile(o *objects.Object, ctype string, cf *objects.CacheFile) error {
+func (inst *ObjectStoragePoolFilter) innerPutFile(cc context.Context, want, have *objects.Object, cf *objects.CacheFile, ctype string) error {
 
-	ctx := o.Context
-	bucket, err := inst.BH.GetBucket(ctx)
+	bucket, err := inst.BH.GetBucket(cc)
 	if err != nil {
 		return err
 	}
 
-	o2 := new(buckets.Object)
-	o2.Context = ctx
-	o2.Name = buckets.ObjectName(cf.Path)
-	o2.Type = buckets.ContentType(ctype)
-	o2.Meta = map[string]string{
-		"content-type": ctype,
-		"obj-id":       o.ID.String(),
-	}
+	fileapi := bucket.ForFiles()
+	o1 := new(buckets.ObjectFile)
+	file := cf.File
 
-	exi, err := bucket.Exists(o2)
+	o1.Context = cc
+	o1.Name = buckets.ObjectName(cf.Path)
+	o1.Path = file
+	o1.Type = buckets.ContentType(ctype)
+
+	has, err := bucket.Exists(&o1.Object)
 	if err != nil {
 		return err
 	}
-	if exi {
+	if has {
 		return nil // skip
 	}
 
-	// src
-	file := cf.File
-	src, err := file.GetIO().OpenReader(nil)
-	if err != nil {
-		return err
-	}
-	defer src.Close()
-
-	// put
-	o2.Data = src
-	o3, err := bucket.Put(o2)
+	o2, err := fileapi.PutFile(o1)
 	if err != nil {
 		return err
 	}
 
-	vlog.Debug("bucket: put object at [%s]", o3.Name)
+	if vlog.IsDebugEnabled() {
+		file := o2.Path
+		name := o2.Name
+		size := o2.Size
+		vlog.Debug("ObjectStoragePoolFilter.[put size:%d name:'%s' src_file:'%s' ]", size, name, file.GetPath())
+	}
 
 	return nil
 }
@@ -101,61 +103,39 @@ func (inst *ObjectStoragePoolFilter) innerFetchFile(cc context.Context, want, ha
 		return err
 	}
 
-	o2 := new(buckets.Object)
+	fileapi := bucket.ForFiles()
+	o2 := new(buckets.ObjectFile)
+	file := cf.File
+
+	if file.Exists() {
+		return nil // skip
+	}
+
 	o2.Context = cc
 	o2.Name = buckets.ObjectName(cf.Path)
+	o2.Path = file
 
-	o3, err := bucket.Fetch(o2)
+	o3, err := fileapi.FetchFile(o2)
 	if err != nil {
 		return err
 	}
 
-	// src
-
-	srcReader := o3.Data
-	if srcReader == nil {
-		return fmt.Errorf("data is nil")
+	if vlog.IsDebugEnabled() {
+		file := o3.Path
+		name := o3.Name
+		size := o3.Size
+		vlog.Debug("ObjectStoragePoolFilter.[fetch size:%d name:'%s' to_file:'%s' ]", size, name, file.GetPath())
 	}
-	defer srcReader.Close()
-
-	// dst
-
-	var dstOptions *afs.Options
-	dstFile := cf.File
-	dstIO := dstFile.GetIO()
-
-	if dstFile.Exists() {
-		dstOptions = files.GetOptionForRewriteFile()
-	} else {
-		dstOptions = files.GetOptionForCreateFile()
-	}
-
-	dstWriter, err := dstIO.OpenWriter(dstOptions)
-	if err != nil {
-		return err
-	}
-	defer dstWriter.Close()
-
-	// pump
-
-	count, err := io.Copy(dstWriter, srcReader)
-	if err != nil {
-		return err
-	}
-
-	// make source
-
-	resultData, err := objects.MakeSourceWithCacheFile(cf)
-	if err != nil {
-		return err
-	}
-
-	vlog.Info("ObjectStoragePoolFilter: fetch %d byte(s) @path:%s", count, cf.Path)
 
 	// keep result
-	have.Name = want.Name
-	have.Path = want.Path
-	have.Data = resultData
+
+	// have.Context = cc
+	// have.ID = want.ID
+	// have.Name = want.Name
+	// have.Path = want.Path
+	// have.Profile = want.Profile
+	// have.Sum = o3.Sum
+
 	return nil
 }
 
@@ -169,7 +149,8 @@ func (inst *ObjectStoragePoolFilter) Fetch(o *objects.IOContext, next objects.Do
 	file1data := want.Files.Data
 	file2meta := want.Files.Meta
 
-	// meta
+	// for meta
+
 	if want.UseMeta {
 		err := inst.innerFetchFile(ctx, want, have, file2meta)
 		if err != nil {
@@ -177,7 +158,8 @@ func (inst *ObjectStoragePoolFilter) Fetch(o *objects.IOContext, next objects.Do
 		}
 	}
 
-	// data
+	// for data
+
 	if want.UseData {
 		err := inst.innerFetchFile(ctx, want, have, file1data)
 		if err != nil {

@@ -4,16 +4,20 @@ const (
 	PriorityMin = iota
 
 	PriorityStorage
+	PriorityDB
 	PriorityCache
-	PriorityMonitor
+	PriorityMeta
 
-	PriorityPath
 	PriorityURL
+	PriorityFiles
+	PriorityPath
 	PrioritySum
+
+	PriorityDebug
+	PriorityMonitor
+	PriorityParamsChecker
 	PriorityBuffer
 	PriorityTemp
-	PriorityDebug
-	PriorityParamsChecker
 
 	PriorityOther
 	PriorityMax

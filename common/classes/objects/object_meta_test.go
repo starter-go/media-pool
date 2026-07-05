@@ -15,7 +15,7 @@ func TestMeta(t *testing.T) {
 	m.Name = "example.txt"
 	m.ID = "fffffffffffff"
 	m.Sum = sum
-	m.Size = 1234
+	m.Length = 1234
 	m.Path = "a/b/c/d/example.txt"
 	m.Type = "text/plain"
 

@@ -41,12 +41,14 @@ func (inst *MonitorFilterLayer) log(o *objects.Object, title string) {
 		return
 	}
 
-	sum := o.Sum.String()
-	tp := o.Type
-	name := o.Name
-	id := o.ID.String()
-	path := o.Path.String()
-	size := o.Size
+	m := &o.Meta
+
+	sum := m.Sum.String()
+	tp := m.Type
+	name := m.Name
+	id := m.ID.String()
+	path := m.Path.String()
+	size := m.Length
 
 	vlog.Debug(title+"[object id:%s sum:%s size:%d type:%s path:%s name:%s]", id, sum, size, tp, path, name)
 }
