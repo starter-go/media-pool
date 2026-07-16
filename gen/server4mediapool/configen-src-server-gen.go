@@ -3,25 +3,19 @@ import (
     p0d2a11d16 "github.com/starter-go/afs"
     p262c04a06 "github.com/starter-go/buckets"
     pd1a916a20 "github.com/starter-go/libgin"
-    p512a30914 "github.com/starter-go/libgorm"
     p0bd1dba0d "github.com/starter-go/media-pool/common/classes/caches"
-    p266af146b "github.com/starter-go/media-pool/common/classes/mediafiles"
     p46220f67d "github.com/starter-go/media-pool/common/classes/objects"
     p4868bf213 "github.com/starter-go/media-pool/common/classes/pools"
-    p305241b71 "github.com/starter-go/media-pool/common/data/entity"
     pdfc4d7922 "github.com/starter-go/media-pool/server"
     p1308d9a33 "github.com/starter-go/media-pool/server/implements/icache"
-    p4791cb7f1 "github.com/starter-go/media-pool/server/implements/idb"
     p821808f49 "github.com/starter-go/media-pool/server/implements/ifiles"
     pa1ce7a44d "github.com/starter-go/media-pool/server/implements/ihash"
-    p345fbf4d5 "github.com/starter-go/media-pool/server/implements/imediafiles"
     p7aa71734e "github.com/starter-go/media-pool/server/implements/imeta"
     pa7b549037 "github.com/starter-go/media-pool/server/implements/imonitor"
     p8d6dba9bf "github.com/starter-go/media-pool/server/implements/iobjects"
     p684d1b16e "github.com/starter-go/media-pool/server/implements/ipath"
     pfc90c21d1 "github.com/starter-go/media-pool/server/implements/istorage"
     p474aadc6b "github.com/starter-go/media-pool/server/web/controllers"
-    p9621e8b71 "github.com/starter-go/security/random"
      "github.com/starter-go/application"
 )
 
@@ -163,168 +157,6 @@ func (inst* p1308d9a332_icache_ObjectCacheFilterLayer) inject(injext application
 
 
 
-// type p4791cb7f1.MPoolDataGroup in package:github.com/starter-go/media-pool/server/implements/idb
-//
-// id:com-4791cb7f1b4e5ab1-idb-MPoolDataGroup
-// class:class-512a309140d0ad99eb1c95c8dc0d02f9-GroupRegistry
-// alias:
-// scope:singleton
-//
-type p4791cb7f1b_idb_MPoolDataGroup struct {
-}
-
-func (inst* p4791cb7f1b_idb_MPoolDataGroup) register(cr application.ComponentRegistry) error {
-	r := cr.NewRegistration()
-	r.ID = "com-4791cb7f1b4e5ab1-idb-MPoolDataGroup"
-	r.Classes = "class-512a309140d0ad99eb1c95c8dc0d02f9-GroupRegistry"
-	r.Aliases = ""
-	r.Scope = "singleton"
-	r.NewFunc = inst.new
-	r.InjectFunc = inst.inject
-	return r.Commit()
-}
-
-func (inst* p4791cb7f1b_idb_MPoolDataGroup) new() any {
-    return &p4791cb7f1.MPoolDataGroup{}
-}
-
-func (inst* p4791cb7f1b_idb_MPoolDataGroup) inject(injext application.InjectionExt, instance any) error {
-	ie := injext
-	com := instance.(*p4791cb7f1.MPoolDataGroup)
-	nop(ie, com)
-
-	
-    com.Prefix = inst.getPrefix(ie)
-    com.URI = inst.getURI(ie)
-    com.Alias = inst.getAlias(ie)
-    com.Source = inst.getSource(ie)
-    com.Enabled = inst.getEnabled(ie)
-
-
-    return nil
-}
-
-
-func (inst*p4791cb7f1b_idb_MPoolDataGroup) getPrefix(ie application.InjectionExt)string{
-    return ie.GetString("${datagroup.mpool.prefix}")
-}
-
-
-func (inst*p4791cb7f1b_idb_MPoolDataGroup) getURI(ie application.InjectionExt)string{
-    return ie.GetString("${datagroup.mpool.uri}")
-}
-
-
-func (inst*p4791cb7f1b_idb_MPoolDataGroup) getAlias(ie application.InjectionExt)string{
-    return ie.GetString("${datagroup.mpool.alias}")
-}
-
-
-func (inst*p4791cb7f1b_idb_MPoolDataGroup) getSource(ie application.InjectionExt)string{
-    return ie.GetString("${datagroup.mpool.source}")
-}
-
-
-func (inst*p4791cb7f1b_idb_MPoolDataGroup) getEnabled(ie application.InjectionExt)bool{
-    return ie.GetBool("${datagroup.mpool.enabled}")
-}
-
-
-
-// type p4791cb7f1.MPoolDBAgentImpl in package:github.com/starter-go/media-pool/server/implements/idb
-//
-// id:com-4791cb7f1b4e5ab1-idb-MPoolDBAgentImpl
-// class:
-// alias:alias-305241b71a7e53c02b673c6377fe6f01-DBAgent
-// scope:singleton
-//
-type p4791cb7f1b_idb_MPoolDBAgentImpl struct {
-}
-
-func (inst* p4791cb7f1b_idb_MPoolDBAgentImpl) register(cr application.ComponentRegistry) error {
-	r := cr.NewRegistration()
-	r.ID = "com-4791cb7f1b4e5ab1-idb-MPoolDBAgentImpl"
-	r.Classes = ""
-	r.Aliases = "alias-305241b71a7e53c02b673c6377fe6f01-DBAgent"
-	r.Scope = "singleton"
-	r.NewFunc = inst.new
-	r.InjectFunc = inst.inject
-	return r.Commit()
-}
-
-func (inst* p4791cb7f1b_idb_MPoolDBAgentImpl) new() any {
-    return &p4791cb7f1.MPoolDBAgentImpl{}
-}
-
-func (inst* p4791cb7f1b_idb_MPoolDBAgentImpl) inject(injext application.InjectionExt, instance any) error {
-	ie := injext
-	com := instance.(*p4791cb7f1.MPoolDBAgentImpl)
-	nop(ie, com)
-
-	
-    com.DSM = inst.getDSM(ie)
-    com.Source = inst.getSource(ie)
-
-
-    return nil
-}
-
-
-func (inst*p4791cb7f1b_idb_MPoolDBAgentImpl) getDSM(ie application.InjectionExt)p512a30914.DataSourceManager{
-    return ie.GetComponent("#alias-512a309140d0ad99eb1c95c8dc0d02f9-DataSourceManager").(p512a30914.DataSourceManager)
-}
-
-
-func (inst*p4791cb7f1b_idb_MPoolDBAgentImpl) getSource(ie application.InjectionExt)string{
-    return ie.GetString("${datagroup.mpool.source}")
-}
-
-
-
-// type p4791cb7f1.ObjectDatabaseFilter in package:github.com/starter-go/media-pool/server/implements/idb
-//
-// id:com-4791cb7f1b4e5ab1-idb-ObjectDatabaseFilter
-// class:class-46220f67d06e6dbd28c3603d4b14f6ae-FilterRegistry
-// alias:
-// scope:singleton
-//
-type p4791cb7f1b_idb_ObjectDatabaseFilter struct {
-}
-
-func (inst* p4791cb7f1b_idb_ObjectDatabaseFilter) register(cr application.ComponentRegistry) error {
-	r := cr.NewRegistration()
-	r.ID = "com-4791cb7f1b4e5ab1-idb-ObjectDatabaseFilter"
-	r.Classes = "class-46220f67d06e6dbd28c3603d4b14f6ae-FilterRegistry"
-	r.Aliases = ""
-	r.Scope = "singleton"
-	r.NewFunc = inst.new
-	r.InjectFunc = inst.inject
-	return r.Commit()
-}
-
-func (inst* p4791cb7f1b_idb_ObjectDatabaseFilter) new() any {
-    return &p4791cb7f1.ObjectDatabaseFilter{}
-}
-
-func (inst* p4791cb7f1b_idb_ObjectDatabaseFilter) inject(injext application.InjectionExt, instance any) error {
-	ie := injext
-	com := instance.(*p4791cb7f1.ObjectDatabaseFilter)
-	nop(ie, com)
-
-	
-    com.Service = inst.getService(ie)
-
-
-    return nil
-}
-
-
-func (inst*p4791cb7f1b_idb_ObjectDatabaseFilter) getService(ie application.InjectionExt)p266af146b.Service{
-    return ie.GetComponent("#alias-266af146baf99bef89dfbe2766339eca-Service").(p266af146b.Service)
-}
-
-
-
 // type p821808f49.FileSetFilter in package:github.com/starter-go/media-pool/server/implements/ifiles
 //
 // id:com-821808f49626e9e9-ifiles-FileSetFilter
@@ -447,100 +279,6 @@ func (inst* pa1ce7a44db_ihash_SumFilterLayer) inject(injext application.Injectio
 
 
     return nil
-}
-
-
-
-// type p345fbf4d5.MediaFileDaoImpl in package:github.com/starter-go/media-pool/server/implements/imediafiles
-//
-// id:com-345fbf4d5347d4b0-imediafiles-MediaFileDaoImpl
-// class:
-// alias:alias-266af146baf99bef89dfbe2766339eca-DAO
-// scope:singleton
-//
-type p345fbf4d53_imediafiles_MediaFileDaoImpl struct {
-}
-
-func (inst* p345fbf4d53_imediafiles_MediaFileDaoImpl) register(cr application.ComponentRegistry) error {
-	r := cr.NewRegistration()
-	r.ID = "com-345fbf4d5347d4b0-imediafiles-MediaFileDaoImpl"
-	r.Classes = ""
-	r.Aliases = "alias-266af146baf99bef89dfbe2766339eca-DAO"
-	r.Scope = "singleton"
-	r.NewFunc = inst.new
-	r.InjectFunc = inst.inject
-	return r.Commit()
-}
-
-func (inst* p345fbf4d53_imediafiles_MediaFileDaoImpl) new() any {
-    return &p345fbf4d5.MediaFileDaoImpl{}
-}
-
-func (inst* p345fbf4d53_imediafiles_MediaFileDaoImpl) inject(injext application.InjectionExt, instance any) error {
-	ie := injext
-	com := instance.(*p345fbf4d5.MediaFileDaoImpl)
-	nop(ie, com)
-
-	
-    com.Agent = inst.getAgent(ie)
-    com.UUIDGen = inst.getUUIDGen(ie)
-
-
-    return nil
-}
-
-
-func (inst*p345fbf4d53_imediafiles_MediaFileDaoImpl) getAgent(ie application.InjectionExt)p305241b71.DBAgent{
-    return ie.GetComponent("#alias-305241b71a7e53c02b673c6377fe6f01-DBAgent").(p305241b71.DBAgent)
-}
-
-
-func (inst*p345fbf4d53_imediafiles_MediaFileDaoImpl) getUUIDGen(ie application.InjectionExt)p9621e8b71.UUIDService{
-    return ie.GetComponent("#alias-9621e8b71013b0fc25942a1749ed3652-UUIDService").(p9621e8b71.UUIDService)
-}
-
-
-
-// type p345fbf4d5.MediaFileServiceImpl in package:github.com/starter-go/media-pool/server/implements/imediafiles
-//
-// id:com-345fbf4d5347d4b0-imediafiles-MediaFileServiceImpl
-// class:
-// alias:alias-266af146baf99bef89dfbe2766339eca-Service
-// scope:singleton
-//
-type p345fbf4d53_imediafiles_MediaFileServiceImpl struct {
-}
-
-func (inst* p345fbf4d53_imediafiles_MediaFileServiceImpl) register(cr application.ComponentRegistry) error {
-	r := cr.NewRegistration()
-	r.ID = "com-345fbf4d5347d4b0-imediafiles-MediaFileServiceImpl"
-	r.Classes = ""
-	r.Aliases = "alias-266af146baf99bef89dfbe2766339eca-Service"
-	r.Scope = "singleton"
-	r.NewFunc = inst.new
-	r.InjectFunc = inst.inject
-	return r.Commit()
-}
-
-func (inst* p345fbf4d53_imediafiles_MediaFileServiceImpl) new() any {
-    return &p345fbf4d5.MediaFileServiceImpl{}
-}
-
-func (inst* p345fbf4d53_imediafiles_MediaFileServiceImpl) inject(injext application.InjectionExt, instance any) error {
-	ie := injext
-	com := instance.(*p345fbf4d5.MediaFileServiceImpl)
-	nop(ie, com)
-
-	
-    com.Dao = inst.getDao(ie)
-
-
-    return nil
-}
-
-
-func (inst*p345fbf4d53_imediafiles_MediaFileServiceImpl) getDao(ie application.InjectionExt)p266af146b.DAO{
-    return ie.GetComponent("#alias-266af146baf99bef89dfbe2766339eca-DAO").(p266af146b.DAO)
 }
 
 
